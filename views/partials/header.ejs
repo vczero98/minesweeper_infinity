@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+		<link rel="stylesheet" href="/stylesheets/rooms.css">
+		<link rel="stylesheet" href="/stylesheets/minfinity.css">
+		<% if (inGameRoom) { %>
+			<link rel="stylesheet" href="/stylesheets/gameroom.css">
+		<% } %>
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<title>Minesweeper Infinity</title>
+	</head>
+	<body>
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+		  <div class="container-fluid">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand" href="/"><strong><em><i class="fa fa-bomb" aria-hidden="true"></i> Minesweeper Infinity</em></strong></a>
+		    </div>
+
+		    <!-- Collect the nav links, forms, and other content for toggling -->
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <ul class="nav navbar-nav">
+		        <li class="<%= (selectedPage === 'rooms') ? 'active' : '' %>"><a href="/rooms">Rooms</a></li>
+						<li class="<%= (selectedPage === 'shop') ? 'active' : '' %>"><a href="/shop">Shop</a></li>
+		        <li class="<%= (selectedPage === 'halloffame') ? 'active' : '' %>"><a href="/halloffame">Hall of Fame</a></li>
+		      </ul>
+		      <ul class="nav navbar-nav navbar-right">
+						<% if (!currentUser) { %>
+							<li><a href="#">Guest <%= guestNum %></a></li>
+							<li><a data-toggle="modal" data-target="#loginModal">Login</a></li>
+							<li class="<%= (selectedPage === 'register') ? 'active' : '' %>"><a href="/register">Register</a></li>
+						<% } else { %>
+							<li><a href="/profiles/<%= currentUser.username %>"><%= currentUser.username %></a></li>
+							<li><a href="/logout">Logout</a></li>
+						<% } %>
+		      </ul>
+		    </div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
+
+		<!-- Login modal -->
+		<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Login</h4>
+		      </div>
+		      <div class="modal-body">
+						<form class="form-horizontal" action="/login" method="POST">
+						  <div class="form-group">
+						    <label for="inputEmail3" class="col-sm-2 control-label">Username</label>
+						    <div class="col-sm-10">
+						      <input type="text" class="form-control" placeholder="Username" name="username" required>
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+						    <div class="col-sm-10">
+						      <input type="password" class="form-control" placeholder="Password" name="password" required>
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <div class="col-sm-offset-2 col-sm-10">
+						      <button type="submit" class="btn btn-primary">Sign in</button>
+						    </div>
+						  </div>
+						</form>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+		<div class="container">
+			<% if (error && error.length > 0) { %>
+				<div class="alert alert-danger alert-dismissible" role="alert">
+				  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				  <%= error %>
+				</div>
+			<% } %>
+			<% if (success && success.length > 0) { %>
+				<div class="alert alert-success alert-dismissible" role="alert">
+				  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				  <%= success %>
+				</div>
+			<% } %>
+		</div>

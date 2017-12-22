@@ -1,0 +1,130 @@
+body {
+	/* background-image: url("https://images.unsplash.com/photo-1465993891989-6d2728076e9a?auto=format&fit=crop&w=1050&q=80&ixid=dW5zcGxhc2guY29tOzs7Ozs%3D"); */
+	background-image: url("../images/background.png");
+	color: white;
+	padding-top: 50px;
+}
+
+a {
+	cursor: pointer;
+}
+.navbar-inverse {
+	background: linear-gradient(to top, rgb(1, 29, 68), #1a2944)
+	/* border-color: */
+}
+
+.navbar-inverse .navbar-nav>li>a {
+	color: #fff;
+}
+
+.navbar-inverse .navbar-brand {
+	color: #fff;
+}
+
+.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover {
+	background-color: rgba(8,8,8,0.5);
+}
+
+#landing-header {
+	z-index: 1;
+	position: relative;
+	text-align: center;
+	padding-top: 30vh;
+}
+
+#landing-header h1 {
+	margin-bottom: 1em;
+}
+
+.btn-success.custom-theme {
+	background: linear-gradient(#5cb85c, #2d632d);
+	border-color: #245624;
+}
+
+.btn-primary.custom-theme {
+	background: linear-gradient(#337ab7, #114069);
+	border-color: #243a56;
+}
+
+.btn-warning.custom-theme {
+	background: linear-gradient(#f0ad4e, #775829);
+	border-color: #583e18;
+}
+
+.btn-danger.custom-theme {
+	background: linear-gradient(#ca1b1b, #801818);
+  border-color: #562424;
+}
+
+#landing-background {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: url("../images/landing-background.jpg");
+	background-size: cover;
+	/* background-position: 50% 50%; */
+	background-repeat: no-repeat;
+}
+
+h1 {
+	font-size: 3em;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.modal {
+	color: black;
+}
+
+#hall-of-fame.container {
+	max-width: 800px;
+}
+
+.content-back {
+	padding: 20px;
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+	background-color: #15233adb;
+	border: 1px solid #000;
+	border-radius: 4px;
+}
+
+#hall-of-fame select {
+	width: auto;
+	margin-left: 40px;
+}
+
+#hall-of-fame table {
+	margin-top: 20px;
+	margin-bottom: 0;
+}
+
+#hall-of-fame td {
+	border-color: #a2fbff26;
+}
+
+#hall-of-fame th {
+	border: none;
+}
+
+#hall-of-fame .clickable-row:hover {
+	background-color: #233450ad;
+	cursor: pointer;
+}
+
+#register {
+	margin: 0 auto;
+	max-width: 700px;
+	padding: 50px 60px;
+}
+
+.form-error {
+	font-style: italic;
+	color: #ff8080;
+}
+
+#loginModal .modal-body {
+	padding: 40px 70px 20px 70px;
+}

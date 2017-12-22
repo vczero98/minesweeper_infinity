@@ -1,0 +1,58 @@
+var express = require("express");
+var router = express.Router();
+var passport = require("passport");
+var User = require("../models/user");
+
+router.get("/", function(req, res) {
+	res.render("landing");
+});
+
+router.get("/shop", function(req, res) {
+	res.render("shop", {selectedPage: "shop"});
+});
+
+router.get("/halloffame", function(req, res) {
+	res.render("halloffame", {selectedPage: "halloffame"});
+});
+
+// AUTH Routes
+router.get("/register", function(req, res){
+	res.render("register", {selectedPage: "register"});
+});
+
+// Handle signup logic
+router.post("/register", function(req, res){
+	if (req.body.password.length < 6) {
+		res.redirect("/");
+	}
+	var newUser = new User({username: req.body.username});
+	User.register(newUser, req.body.password, function(err, user){
+		if (err) {
+			req.flash("error", err.message);
+			res.redirect("/register");
+		} else {
+			passport.authenticate("local")(req, res, function(){
+				res.redirect("/rooms");
+			});
+		}
+	});
+});
+
+router.get("/login", function(req, res){
+	res.render("login");
+});
+
+router.post("/login", passport.authenticate("local", {
+	successRedirect: "/rooms",
+	failureRedirect: "/login"
+}), function(req, res){
+});
+
+// Logout route
+router.get("/logout", function(req, res){
+	req.logout();
+	// req.flash("success", "You have been logged out");
+	res.redirect("/");
+});
+
+module.exports = router;

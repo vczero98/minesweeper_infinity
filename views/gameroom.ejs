@@ -1,0 +1,50 @@
+<% include ./partials/header %>
+
+<div id="main-screen">
+	<div id="main-game" class="pull-left">
+		<p>Room <%= room.name %> (<%= room.id %>)</p>
+	</div>
+	<div id="stat-bar" class="pull-right">
+		<div id="stat-header">
+			<h2><%= room.name %></h2>
+			<hr>
+			<table>
+			  <tr>
+			    <td><span class="player-color red"></span>vilmos98</td>
+			    <td><i class="fa fa-flag" aria-hidden="true"></i> 12</td>
+			    <td><i class="fa fa-square-o" aria-hidden="true"></i> 50</td>
+			  </tr>
+			  <tr>
+			    <td><span class="player-color green"></span>ivo118</td>
+			    <td><i class="fa fa-flag" aria-hidden="true"></i> 46</td>
+			    <td><i class="fa fa-square-o" aria-hidden="true"></i> 12</td>
+			  </tr>
+				<tr>
+			    <td><span class="player-color purple"></span>BonsiBlu</td>
+			    <td><i class="fa fa-flag" aria-hidden="true"></i> 41</td>
+			    <td><i class="fa fa-square-o" aria-hidden="true"></i> 2</td>
+			  </tr>
+				<tr>
+			    <td class="empty-place">empty</td>
+			  </tr>
+			</table>
+		</div>
+		<hr>
+		<div id="chat">
+			<div id="chat-messages">
+			</div>
+			<form id="chat-post" onsubmit="return inputMessage()">
+				<input type="text" id="chat-message" autocomplete="off">
+				<button type="submit" id="send-message">Send</button>
+			</form>
+		</div>
+		<hr>
+		<div class="" id="stat-footer">
+			<a href="/rooms" type="submit" class="btn btn-danger custom-theme btn-lg">Leave room</a>
+		</div>
+	</div>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="/js/game/chat.js"></script>
+
+<% include ./partials/footer %>

@@ -1,0 +1,174 @@
+html, body {
+	height: 100%
+}
+
+.navbar {
+	margin-bottom: 0;
+}
+
+#main-screen {
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+
+#main-game {
+	/* margin: 0; */
+	display: block;
+	/* background-color: #001333; */
+}
+
+#stat-bar {
+	background-color: #001333;
+	width: 320px;
+	height: 100%;
+	display: flex;
+	flex-flow: column;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 1), 0 6px 20px 0 rgba(0, 0, 0, 1);
+}
+
+#stat-header {
+	/* background-color: green; */
+	flex: 0 1 auto;
+}
+
+#stat-header h2 {
+	text-shadow: 0 0 12px #65e3ff;
+	margin-bottom: 0;
+	padding: 0 10px;
+	text-align: center;
+	width: 100%;
+}
+
+#stat-header table {
+	margin-top: 20px;
+	margin-left: 20px;
+	font-size: 16px;
+	width: 280px;
+	/* background-color: red; */
+}
+
+#stat-header td:nth-child(2) {
+	width: 50px;
+}
+
+#stat-header td:nth-child(3) {
+	width: 50px;
+}
+/*
+#stat-header tr td:nth-child(1) {
+	width: 200px;
+} */
+
+hr {
+  background-image: linear-gradient(to right, #0d2046, #6a8bce, #0d2046);
+	border: 0;
+	clear:both;
+	display:block;
+	width: 96%;
+	height: 1px;
+}
+
+span.player-color {
+	margin-right: 6px;
+	height: 11px;
+	width: 11px;
+	display: inline-block;
+}
+
+span.player-color.red {
+	background: linear-gradient(to bottom right, #ca0000, #7d0505);
+	border: 1px solid #420000;
+}
+
+span.player-color.green {
+	background: linear-gradient(to bottom right, #109200, #095200);
+	border: 1px solid #074200;
+}
+
+span.player-color.purple {
+	background: linear-gradient(to bottom right, #6a00ca, #39006d);
+	border: 1px solid #130042;
+}
+
+span.player-color.yellow {
+	background: linear-gradient(to bottom right, #cac400, #716e00);
+	border: 1px solid #384200;
+}
+
+td.empty-place {
+	font-style: italic;
+	padding-left: 18px;
+	color: #a5a5a5;
+}
+
+#chat {
+	flex: 1 1 auto;
+	flex-flow: column;
+	display: flex;
+	margin: 0 20px;
+	width: 280px;
+	height: 200px;
+	background-color: #041c4c;
+	border: 1px solid #295c9a;
+}
+
+.from-server {
+	font-style: italic;
+	color: #91f5ff;
+}
+
+#chat-messages {
+	overflow: auto;
+	flex: 1;
+	padding: 10px 10px 0 10px;
+}
+
+#chat-messages p {
+	margin-bottom: 4px;
+}
+
+#chat-post {
+	display: flex;
+	height: auto;
+	/* background-color: green; */
+	/* padding: 10px; */
+	border-top: 1px solid #295c9a;
+}
+
+#chat-post input {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 14px;
+	padding-left: 10px;
+	background-color: #103888;
+	border: 1px solid #041c4b;
+	border-right: none;
+	flex: 1;
+	width: 200px;
+}
+
+#chat-post input:focus {
+    outline: none;
+}
+
+#chat-post button {
+	background-color: #345494;
+	border: 1px solid #041c4b;
+}
+
+#stat-header i {
+	font-size: 15px;
+}
+
+#stat-footer {
+	width: 320px;
+	height: auto;
+	padding: 20px;
+	padding-top: 0;
+	flex: 0 1 40px;
+	/* background-color: skyblue; */
+}
+
+#stat-footer .btn  {
+	width: 100%;
+}

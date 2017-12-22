@@ -1,0 +1,44 @@
+<% include ./partials/header %>
+
+<div id="hall-of-fame" class="container">
+	<h1>Hall of Fame: Top 200 players</h1>
+	<div class="content-back">
+		<div class="form-inline">
+    	<label>Category: </label>
+			<select class="form-control">
+			  <option>Games played</option>
+			  <option>Total mines found</option>
+				<option>Hours played</option>
+				<option>Coins</option>
+				<option>Games won</option>
+			</select>
+  	</div>
+		<table class="table">
+		  <tr>
+		  	<th>#</th>
+				<th>Username</th>
+				<th>Games played</th>
+		  </tr>
+
+			<% var n = 0 %>
+			<% var genUsers = []; %>
+			<% for (var i = 200; i >= 1; i--) { %>
+				<% n += Math.floor(Math.random() * 5 + 1); %>
+				<% genUsers.push({num: i, name: "player" + i, n: n}); %>
+			<% } %>
+
+			<% for (var i = 199; i >= 0; i--) { %>
+				<% var genUser = genUsers[i]; %>
+				<tr class="clickable-row" data-href="/profiles/<%= genUser.name %>">
+					<td> <%= genUser.num %> </td>
+					<td> <%= genUser.name %> </td>
+					<td> <%= genUser.n %> </td>
+				</tr>
+			<% } %>
+		</table>
+	</div>
+</div>
+
+<script type="text/javascript" src="js/halloffame.js"></script>
+
+<% include ./partials/footer %>
