@@ -28,7 +28,7 @@
 	width: 100%;
 }
 
-.room-full .btn-warning, .room-full .btn-warning:active, .room-full .btn-warning:active:hover {
+.room-full .btn-warning.custom-theme, .room-full .btn-warning:active, .room-full .btn-warning:active:hover {
 	background: #444444;
 	border-color: black;
 	color: gray;

@@ -139,7 +139,7 @@ td.empty-place {
 #chat-post input {
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	font-size: 14px;
-	padding-left: 10px;
+	padding: 0 5px 0 10px;
 	background-color: #103888;
 	border: 1px solid #041c4b;
 	border-right: none;

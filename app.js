@@ -7,7 +7,7 @@ var express          = require("express"),
 		// methodOverride = require("method-override"),
 		flash            = require("connect-flash"),
 		server           = require('http').createServer(app),
-    io               = require('socket.io')(server),
+    io               = require('socket.io').listen(server),
 		expressSession   = require("express-session"),
 		sharedsession    = require("express-socket.io-session"),
 		MongoStore       = require('connect-mongo')(expressSession),
@@ -17,21 +17,37 @@ var User = require("./models/user");
 //     Comment    = require("./models/comment"),
 // 		seedDB     = require("./seeds"),
 
-var port = 3000;
+var port          = 3000,
+    serverAddress = "0.0.0.0";
 
 var Room = require("./game/room");
 
-var rooms = [new Room("t", "Test Room", 4, 0)];
+function RoomsHandler() {
+	this.rooms = [];
+
+	this.getRoomById = function(id) {
+		for (var i = 0; i < this.rooms.length; i++) {
+			if (this.rooms[i].id == id) {
+				return this.rooms[i];
+			}
+		}
+
+		return undefined;
+	}
+}
+
+var roomsHandler = new RoomsHandler();
+roomsHandler.rooms.push(new Room("t", "Test Room", 4, 0));
 
 var indexRoutes    = require("./routes/index"),
     userRoutes     = require("./routes/users"),
-		roomRoutes     = require("./routes/rooms")(rooms);
+		roomRoutes     = require("./routes/rooms")(roomsHandler);
 
 var sessionStore = new MongoStore({ mongooseConnection: mongoose.connection });
 
 // seedDB(); // Seed the database
 app.use(express.static(__dirname + "/public"));
-mongoose.connect("mongodb://localhost/minesweeper_infinity");
+mongoose.connect("mongodb://localhost/minesweeper_infinity", {useMongoClient: true});
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 // app.use(methodOverride("_method"));
@@ -63,7 +79,7 @@ io.use(passportSocketIo.authorize({
 	}
 }));
 
-var gameSocket = require("./game/socket.js")(io);
+var gameSocket = require("./game/socket.js")(io, roomsHandler);
 
 app.use(function(req, res, next){
 	// req.user available on every single route
@@ -104,12 +120,12 @@ app.use(function(req, res, next){
   // default to plain-text. send()
   res.type('txt').send('Not found');
 });
-
-app.listen(port, "localhost", function(){
-	console.log("Server started on port " + port);
-});
+//
+// app.listen(port, serverAddress, function(){
+// 	console.log("Server started on port " + port);
+// });
 
 // socket.io
-server.listen(port, function () {
-  console.log('Server listening at port %d', port);
+server.listen(port, serverAddress, function () {
+  console.log('Server listening at ' + serverAddress + ":" + port);
 });

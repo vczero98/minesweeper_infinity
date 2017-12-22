@@ -5,11 +5,11 @@ var express = require("express");
 
 var roomIdCounter = Math.floor(Math.random() * 100000);
 
-module.exports = function(rooms) {
+module.exports = function(roomsHandler) {
 	var router = express.Router();
 
 	router.get("/", function(req, res) {
-		res.render("rooms", {selectedPage: "rooms", rooms: rooms});
+		res.render("rooms", {selectedPage: "rooms", roomsHandler: roomsHandler});
 	});
 
 	router.post("/", function(req, res) {
@@ -29,17 +29,18 @@ module.exports = function(rooms) {
 		} else {
 			var newRoom = new Room(id, name, maxPlayers, timer);
 			console.log("User created room " + newRoom.name);
-			rooms.push(newRoom);
+			roomsHandler.rooms.push(newRoom);
 			res.redirect("/rooms");
 		}
 	});
 
 	router.get("/:room_id", function(req, res) {
-		var room = getRoomById(req.params.room_id);
+		var room = roomsHandler.getRoomById(req.params.room_id);
 
 		if (room == undefined) {
 			res.redirect("/rooms")
 		} else {
+			req.session.roomid = req.params.room_id; // Store the room id in the cookie, will be used by the socket
 			res.render("gameroom", {inGameRoom: true, room: room});
 		}
 
@@ -58,20 +59,10 @@ module.exports = function(rooms) {
 		// }
 	});
 
-	function getRoomById(id) {
-		for (var i = 0; i < rooms.length; i++) {
-			if (rooms[i].id == id) {
-				return rooms[i];
-			}
-		}
-
-		return undefined;
-	}
-
 	function remove(array, element) {
 	    const index = array.indexOf(element);
 	    array.splice(index, 1);
 	}
 
-	return {router: router, rooms: rooms};
+	return {router: router, roomsHandler: roomsHandler};
 };

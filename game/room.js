@@ -4,6 +4,7 @@ function Room(id, name, maxPlayers, time) {
 	this.maxPlayers = maxPlayers;
 	this.players = [];
 	this.time = time;
+	this.availableColors = ["yellow", "purple", "green", "red"]
 }
 
 Room.prototype.getNumPlayers = function() {

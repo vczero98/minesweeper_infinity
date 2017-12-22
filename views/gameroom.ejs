@@ -8,25 +8,14 @@
 		<div id="stat-header">
 			<h2><%= room.name %></h2>
 			<hr>
-			<table>
-			  <tr>
-			    <td><span class="player-color red"></span>vilmos98</td>
-			    <td><i class="fa fa-flag" aria-hidden="true"></i> 12</td>
-			    <td><i class="fa fa-square-o" aria-hidden="true"></i> 50</td>
-			  </tr>
-			  <tr>
-			    <td><span class="player-color green"></span>ivo118</td>
-			    <td><i class="fa fa-flag" aria-hidden="true"></i> 46</td>
-			    <td><i class="fa fa-square-o" aria-hidden="true"></i> 12</td>
-			  </tr>
-				<tr>
-			    <td><span class="player-color purple"></span>BonsiBlu</td>
-			    <td><i class="fa fa-flag" aria-hidden="true"></i> 41</td>
-			    <td><i class="fa fa-square-o" aria-hidden="true"></i> 2</td>
-			  </tr>
-				<tr>
-			    <td class="empty-place">empty</td>
-			  </tr>
+			 <table id="players-table">
+				 <tbody>
+           <% for (var i = 0; i < room.maxPlayers; i++) { %>
+             <tr class="empty-row">
+						   <td class="empty-place">empty</td>
+						 </tr>
+           <% } %>
+				 </tbody>
 			</table>
 		</div>
 		<hr>

@@ -4,13 +4,13 @@
 	<h1>Rooms</h1>
 	<div id="rooms-list">
 		<button type="button" class="btn btn-lg btn-success custom-theme" data-toggle="modal" data-target="#createRoomModal">Create new room</button>
-		<ul class="list-group <%= rooms.length == 0 ? 'empty-list' : '' %>">
-			<% if (rooms.length == 0) { %>
+		<ul class="list-group <%= roomsHandler.rooms.length == 0 ? 'empty-list' : '' %>">
+			<% if (roomsHandler.rooms.length == 0) { %>
 				<li class="list-group-item">
 					<p>There are no rooms currently, but feel free to create one!</p>
 				</li>
 			<% } else { %>
-				<% rooms.forEach(function(room){ %>
+				<% roomsHandler.rooms.forEach(function(room){ %>
 					<li class="list-group-item <%= room.isFull() ? 'room-full' : '' %>">
 						<p><%= room.name %></p>
 						<% if (!room.isFull()) { %>

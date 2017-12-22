@@ -43,9 +43,14 @@ router.get("/login", function(req, res){
 });
 
 router.post("/login", passport.authenticate("local", {
-	successRedirect: "/rooms",
+	// successRedirect: "/rooms",
 	failureRedirect: "/login"
 }), function(req, res){
+	if (req.get('referer').includes("login")) {
+		res.redirect("/rooms");
+	} else {
+		res.redirect(req.get('referer'));
+	}
 });
 
 // Logout route
