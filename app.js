@@ -74,7 +74,9 @@ io.use(passportSocketIo.authorize({
   secret: 'Once again Bonsi wins cutest dog!',
   store: sessionStore,
 	fail: function(data, message, error, accept) {
-		if(error)  throw new Error(message);
+		if (error) {
+			console.log(message);
+		}
   	return accept();
 	}
 }));

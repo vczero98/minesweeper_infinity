@@ -1,7 +1,9 @@
-var socket = io();
+function ChatHandler() {
 
-function inputMessage() {
-	var message = $("#chat-message").val();
+}
+
+ChatHandler.prototype.inputMessage = function(message, socket) {
+	console.log(message);
 	if (message.length > 0) {
 		if (message.substring(0,1) === "/") {
 			if (message.length > 1) {
@@ -19,23 +21,20 @@ function inputMessage() {
 			socket.emit('send-message', message);
 		}
 	}
-
-	$("#chat-message").val("");
-	return false;
 }
 
-function addChatMessage(username, message) {
+ChatHandler.prototype.addChatMessage = function(username, message) {
 	$('#chat-messages').append('<p><strong>' + username + ':</strong> ' + message + '</p>');
-	scrollToBottom();
+	this.scrollToBottom();
 }
 
-function addServerMessage(message) {
+ChatHandler.prototype.addServerMessage = function(message) {
 	$('#chat-messages').append('<p class="from-server">' + message + '</p>');
-	scrollToBottom();
+	this.scrollToBottom();
 }
 
 
-function addPlayerToTable(player) {
+ChatHandler.prototype.addPlayerToTable = function(player) {
 	var emptyRow = $("#players-table .empty-row").first();
 	emptyRow.removeClass("empty-row");
 	emptyRow.addClass("player");
@@ -45,48 +44,12 @@ function addPlayerToTable(player) {
 	emptyRow.append('<td><i class="fa fa-square-o" aria-hidden="true"></i> 0</td>');
 }
 
-function removePlayerFromTable(data) {
+ChatHandler.prototype.removePlayerFromTable = function(data) {
 	var row = $("#players-table span:contains('" + data.username + "')").parent().parent();
 	row.remove();
 	$("#players-table tbody").append('<tr class="empty-row"><td class="empty-place">empty</td></tr>');
 }
 
-function scrollToBottom() {
+ChatHandler.prototype.scrollToBottom = function() {
 	$('#chat-messages').scrollTop($('#chat-messages')[0].scrollHeight);
 }
-
-socket.on('new-player', function (data) {
-	addServerMessage(data.username + " has joined the room.");
-	addPlayerToTable(data);
-});
-
-socket.on('player-left', function (data) {
-	addServerMessage(data.username + " has left the room.");
-	removePlayerFromTable(data);
-	// addPlayerToTable(data.username);
-});
-
-socket.on('chat-message', function (data) {
-	addChatMessage(data.user, data.message);
-});
-
-socket.on('server-message', function (data) {
-	addServerMessage(data);
-});
-
-socket.on('all-players', function (data) {
-	data.forEach(function(player) {
-		addPlayerToTable(player);
-	});
-});
-
-socket.on('color-change', function (data) {
-	var span = $("#players-table ." + data.oldColor);
-	span.removeClass(data.oldColor);
-	span.addClass(data.newColor);
-});
-
-
-socket.on('disconnect', function (data) {
-	window.location.href = "/rooms";
-});

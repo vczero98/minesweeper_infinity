@@ -1,12 +1,37 @@
 <% include ./partials/header %>
 
 <div id="main-screen">
-	<div id="main-game" class="pull-left">
-		<p>Room <%= room.name %> (<%= room.id %>)</p>
+	<div id="main-game">
+		<!-- <div id="head">
+			<p class="counter" id="displayTime"></p>
+			<p id="title"><i class="fa fa-bomb" aria-hidden="true"></i>Minesweeper!</p>
+			<p class="counter" id="displayMinesLeft"></p>
+		</div> -->
+
+		<div id="game"></div>
+		<div id="game-items-container">
+			<div id="game-item">
+
+			</div>
+			<div id="game-item">
+
+			</div>
+			<div id="game-item">
+
+			</div>
+			<div id="game-item">
+
+			</div>
+			<div id="game-item">
+
+			</div>
+		</div>
 	</div>
-	<div id="stat-bar" class="pull-right">
+	<div id="stat-bar">
 		<div id="stat-header">
 			<h2><%= room.name %></h2>
+			<hr>
+			<h3><%= room.time > 0 ? room.time : 'Timer off'%></h3>
 			<hr>
 			 <table id="players-table">
 				 <tbody>
@@ -33,7 +58,31 @@
 		</div>
 	</div>
 </div>
+<img src="/images/game/unexpanded.png" hidden>
+<img src="/images/game/0.png" hidden>
+<img src="/images/game/1.png" hidden>
+<img src="/images/game/2.png" hidden>
+<img src="/images/game/3.png" hidden>
+<img src="/images/game/4.png" hidden>
+<img src="/images/game/5.png" hidden>
+<img src="/images/game/6.png" hidden>
+<img src="/images/game/7.png" hidden>
+<img src="/images/game/8.png" hidden>
+<img src="/images/game/broken_flag.png" hidden>
+<img src="/images/game/flag_red.png" hidden>
+<img src="/images/game/flag_green.png" hidden>
+<img src="/images/game/flag_purple.png" hidden>
+<img src="/images/game/flag_yellow.png" hidden>
+<img src="/images/game/green_flag.png" hidden>
+<img src="/images/game/mine_clicked.png" hidden>
+<img src="/images/game/mine.png" hidden>
 <script src="/socket.io/socket.io.js"></script>
-<script type="text/javascript" src="/js/game/chat.js"></script>
+<script type="text/javascript" src="/js/game/playersmanager.js"></script>
+<script type="text/javascript" src="/js/game/block.js"></script>
+<script type="text/javascript" src="/js/game/blocks.js"></script>
+<script type="text/javascript" src="/js/game/board2.js"></script>
+<script type="text/javascript" src="/js/game/chathandler.js"></script>
+<script type="text/javascript" src="/js/game/sockethandler.js"></script>
+<script type="text/javascript" src="/js/game/main.js"></script>
 
 <% include ./partials/footer %>

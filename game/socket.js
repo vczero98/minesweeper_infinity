@@ -21,10 +21,12 @@ module.exports = function(io, roomsHandler) {
 				requestGranted = true;
 				socket.join(roomid);
 				username = getName();
-				socket.emit('all-players', room.players);
+
 				player = {username: username,  color: room.availableColors.pop()};
+				socket.emit('all-players', {players: room.players, me: player});
 				room.players.push(player);
-				io.to(roomid).emit('new-player', player);
+				socket.emit('server-message', username + " has joined the room.");
+				socket.broadcast.to(roomid).emit('new-player', player);
 			}
 		}
 
@@ -42,8 +44,8 @@ module.exports = function(io, roomsHandler) {
 					room.availableColors.splice(index, 1)
 					room.availableColors.push(player.color);
 					player.color = color;
-					socket.emit('server-message', "Changed color to " + color + ".");
-					io.to(roomid).emit('color-change', {oldColor: oldColor, newColor: color});
+					socket.emit('server-message', "Changed colour to " + color + ".");
+					io.to(roomid).emit('color-change', {oldColor: oldColor, newColor: color, username: player.username});
 				} else {
 					socket.emit('server-message', "Color is not available.");
 				}
@@ -62,6 +64,12 @@ module.exports = function(io, roomsHandler) {
 					room.players.splice(index, 1);
 					room.availableColors.push(player.color);
 				}
+			}
+		});
+
+		socket.on('flag-block', function(data) {
+			if (requestGranted) {
+				socket.broadcast.to(roomid).emit('flag-block', {color: player.color, x: data.x, y: data.y});
 			}
 		});
 
