@@ -8,13 +8,17 @@ window.onload = function() {
 	var cWidth = document.documentElement.clientWidth - 320;
 	var playersManager = new PlayersManager();
 	var board = new Board(cHeight, cWidth, playersManager);
+	this.board = board;
 
+	// board.drawBoard(true);
 	var socket = io();
 	var chatHandler = new ChatHandler();
 	var socketHandler = new SocketHandler(chatHandler, socket, playersManager, board);
 
+
+
 	// board.drawBlock(1,1,false);
-	board.canvas.addEventListener("mouseup", function(evt){
+	board.getCanvas().addEventListener("mouseup", function(evt){
 		// Get the position of the click
 		var el = evt.target;
 		var xPos = evt.clientX - el.offsetLeft;
