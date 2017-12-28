@@ -24,7 +24,7 @@ function Blocks() {
 				blocks.push([]);
 			}
 		}
-		
+
 		var blockRow = blocks[xIndex];
 
 		if (blockRow.length >= yIndex) {
@@ -38,8 +38,12 @@ function Blocks() {
 
 	}
 
-	function setState(newBlocks) {
-		blocks = newBlocks;
+	function resetBlocks() {
+		blocks = [];
+	}
+
+	function getBlocksState() {
+		return blocks;
 	}
 
 	function map(n) {
@@ -52,5 +56,8 @@ function Blocks() {
 
 	Blocks.prototype.getBlock = getBlock;
 	Blocks.prototype.setBlock = setBlock;
-	Blocks.prototype.setState = setState;
+	Blocks.prototype.resetBlocks = resetBlocks;
+	Blocks.prototype.getBlocksState = getBlocksState;
 }
+
+module.exports = Blocks;

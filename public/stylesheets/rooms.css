@@ -50,3 +50,9 @@
 	margin-bottom: 10px;
 	display: inline-block;
 }
+
+#private-label {
+	color: gray;
+	font-style: italic;
+	font-size: 13px;
+}

@@ -17,10 +17,4 @@ function Block() {
 	this.isUndefinedBlock = false;
 	this.expanded = false;
 	this.flagColor = "";
-
-	function isFlagged() {
-		return !(this.flagColor === "");
-	}
-
-	Block.prototype.isFlagged = isFlagged;
 }

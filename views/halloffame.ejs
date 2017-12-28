@@ -31,7 +31,7 @@
 				<% var genUser = genUsers[i]; %>
 				<tr class="clickable-row" data-href="/profiles/<%= genUser.name %>">
 					<td> <%= genUser.num %> </td>
-					<td> <%= genUser.name %> </td>
+					<td> <%= (i === 199) ? 'LastRound Channel' : genUser.name %> </td>
 					<td> <%= genUser.n %> </td>
 				</tr>
 			<% } %>

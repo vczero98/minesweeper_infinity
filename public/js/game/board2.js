@@ -19,11 +19,6 @@ function Board(height, width, playersManager) {
 
 	function drawBlock(x, y) {
 		var block = blocks.getBlock(x, y); // Get the from indices
-		// Create canvas and ctx
-		var blockCanvas = document.createElement("canvas");
-		blockCanvas.height = height;
-		blockCanvas.width = width;
-		var blockCtx = blockCanvas.getContext("2d");
 
 		var img;
 		var newSrc = "";
@@ -44,7 +39,7 @@ function Board(height, width, playersManager) {
 			img = images.unexpanded;
 		} else if (block.expanded) {
 			img = images.e0;
-		} else if (block.isFlagged()) {
+		} else if (!(block.flagColor === "")) {
 			switch (block.flagColor) {
 				case "red":
 					img = images.flag_red
@@ -91,19 +86,31 @@ function Board(height, width, playersManager) {
 		}
 	}
 
-	function flagBlock(x, y, color) {
+	function flagBlock(x, y, username) {
+		var player = playersManager.getPlayerByUsername(username);
 		var block = blocks.getBlock(x, y);
 		if (block.isUndefinedBlock) {
 			block = new Block();
 			blocks.setBlock(x, y, block);
 		}
-		if (!block.isFlagged()) {
-			console.log("found old block");
-			block.flagColor = color;
+		if (block.flagColor === "") {
+			// Add the block flag
+			block.flagColor = player.color;
+			block.flagOwner = username;
 			drawBlock(x, y);
+			return true;
+		} else if (block.flagOwner === playersManager.getMe().username) {
+			// Remove the block flag
+			removeFlag(x, y);
 			return true;
 		}
 		return false;
+	}
+
+	function removeFlag(x, y) {
+		var block = blocks.getBlock(x, y);
+		block.flagColor = "";
+		drawBlock(x, y);
 	}
 
 	function createBoard() {
@@ -133,10 +140,15 @@ function Board(height, width, playersManager) {
 		return canvas;
 	}
 
+	function getBlocks() {
+		return blocks;
+	}
+
 	Board.prototype.clickBlock = clickBlock;
 	Board.prototype.drawBoard = drawBoard;
 	Board.prototype.drawBlock = drawBlock;
 	Board.prototype.flagBlock = flagBlock;
+	Board.prototype.removeFlag = removeFlag;
 	Board.prototype.getCanvas = getCanvas;
-
+	Board.prototype.getBlocks = getBlocks;
 }

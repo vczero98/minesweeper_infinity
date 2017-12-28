@@ -36,6 +36,10 @@ a {
 	margin-bottom: 1em;
 }
 
+.container {
+	margin-top: 30px;
+}
+
 .btn-success.custom-theme {
 	background: linear-gradient(#5cb85c, #2d632d);
 	border-color: #245624;
@@ -71,11 +75,19 @@ a {
 h1 {
 	font-size: 3em;
 	text-align: center;
+	margin-top: 0px;
 	margin-bottom: 30px;
 }
 
 .modal {
 	color: black;
+}
+
+#level {
+	margin-right: 3px;
+	/* background-color: red; */
+	/* height: 20px; */
+	/* width: 20px; */
 }
 
 #hall-of-fame.container {
@@ -127,4 +139,62 @@ h1 {
 
 #loginModal .modal-body {
 	padding: 40px 70px 20px 70px;
+}
+
+#profiles {
+	margin-top: 50px;
+	width: 800px;
+}
+
+#profiles-img {
+	height: 150px;
+	width: 150px;
+	background-color: red;
+	float: left;
+}
+
+#profiles-content {
+	overflow: hidden;
+	padding-left: 30px;
+}
+
+#profiles-content h2 {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+#profiles-content h3 {
+	font-style: italic;
+	margin-top: 0;
+	margin-bottom: 20px;
+	font-size: 20px;
+}
+
+#profiles-content ul {
+	list-style-type: none;
+	padding-left: 0;
+}
+
+#profiles-content hr {
+	width: 0;
+}
+
+#bio {
+	margin-bottom: 0;
+}
+
+#profile-items {
+	margin-top: 20px;
+	overflow: hidden;
+}
+
+.profile-item {
+	height: 50px;
+	width: 50px;
+	background-color: grey;
+	border: 1px solid red;
+	/* display: block; */
+	/* margin: 0px; */
+	float: left;
+	margin-right: 15px;
 }

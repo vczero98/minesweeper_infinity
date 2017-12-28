@@ -11,22 +11,24 @@
 				</li>
 			<% } else { %>
 				<% roomsHandler.rooms.forEach(function(room){ %>
-					<li class="list-group-item <%= room.isFull() ? 'room-full' : '' %>">
-						<p><%= room.name %></p>
-						<% if (!room.isFull()) { %>
-							<a href="/rooms/<%= room.id %>" class="btn btn-warning custom-theme pull-right">Join</a>
-						<% } else { %>
-							<span class="btn btn-warning custom-theme pull-right">Join</span>
-						<% } %>
-						<p class="pull-right"><%= room.getNumPlayers() %>/<%= room.maxPlayers %></p>
-						<p class="pull-right">
-							<% if (room.time > 0) { %>
-								<i class="fa fa-hourglass-half" aria-hidden="true"></i> <%= (room.time / 60) %>m
+					<% if (!room.isPrivate) { %>
+						<li class="list-group-item <%= room.isFull() ? 'room-full' : '' %>">
+							<p><%= room.name %></p>
+							<% if (!room.isFull()) { %>
+								<a href="/rooms/<%= room.id %>" class="btn btn-warning custom-theme pull-right">Join</a>
 							<% } else { %>
-								No timer
+								<span class="btn btn-warning custom-theme pull-right">Join</span>
 							<% } %>
-						</p>
-					</li>
+							<p class="pull-right"><%= room.getNumPlayers() %>/<%= room.maxPlayers %></p>
+							<p class="pull-right">
+								<% if (room.time > 0) { %>
+									<i class="fa fa-hourglass-half" aria-hidden="true"></i> <%= (room.time / 60) %>m
+								<% } else { %>
+									No timer
+								<% } %>
+							</p>
+						</li>
+					<% } %>
 				<% }); %>
 			<% } %>
 
@@ -84,11 +86,12 @@
 				    </div>
 				  </div>
 					<div class="form-group">
-				    <div class="col-sm-offset-4 col-sm-8">
+				    <div class="col-sm-offset-4 col-sm-7">
 				      <div class="checkbox">
 				        <label>
-				          <input type="checkbox"> Passcode
+				          <input id="private-checkbox" type="checkbox" name="private"> Private
 				        </label>
+								<p id="private-label" hidden>Private rooms will not be listed. You can share the room using its link.</p>
 							</div>
 				    </div>
 				  </div>
@@ -101,5 +104,7 @@
       </div>
   </div>
 </div>
+
+<script type="text/javascript" src="/js/rooms.js"></script>
 
 <% include ./partials/footer %>

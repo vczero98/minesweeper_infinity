@@ -11,6 +11,27 @@ router.get("/shop", function(req, res) {
 	res.render("shop", {selectedPage: "shop"});
 });
 
+router.get("/profiles", function(req, res) {
+	res.render("profiles");
+});
+
+router.get("/profiles/:reqUsername", function(req, res) {
+	User.find({username: req.params.reqUsername}, function(err, users){
+		if (err) {
+			console.log(err);
+			res.redirect("/profiles");
+		} else {
+			var foundUser = users[0];
+			if (foundUser) {
+				res.render("profile", {foundUser: foundUser});
+			} else {
+				req.flash("error", "User with username " + req.params.reqUsername + " could not be found.");
+				res.redirect("/profiles");
+			}
+		}
+	});
+});
+
 router.get("/halloffame", function(req, res) {
 	res.render("halloffame", {selectedPage: "halloffame"});
 });

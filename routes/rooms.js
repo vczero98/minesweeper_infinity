@@ -17,6 +17,8 @@ module.exports = function(roomsHandler) {
 		var name = req.body.name;
 		var maxPlayers = parseInt(req.body.maxPlayers);
 		var timer = parseInt(req.body.timer);
+		console.log(req.body.private);
+		var isPrivate = req.body.private === "on";
 
 		if (name === "") {
 			res.redirect("/rooms");
@@ -27,10 +29,10 @@ module.exports = function(roomsHandler) {
 		} else if (maxPlayers < 2 || maxPlayers > 4) {
 			res.redirect("/rooms");
 		} else {
-			var newRoom = new Room(id, name, maxPlayers, timer);
+			var newRoom = new Room(id, name, maxPlayers, timer, isPrivate);
 			console.log("User created room " + newRoom.name);
 			roomsHandler.rooms.push(newRoom);
-			res.redirect("/rooms");
+			res.redirect("/rooms/" + id);
 		}
 	});
 

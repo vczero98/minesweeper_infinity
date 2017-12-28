@@ -40,6 +40,7 @@
 							<li><a data-toggle="modal" data-target="#loginModal">Login</a></li>
 							<li class="<%= (selectedPage === 'register') ? 'active' : '' %>"><a href="/register">Register</a></li>
 						<% } else { %>
+							<!-- <li><a href="/profiles/<%= currentUser.username %>"><img src="/images/game/level.png" id="level"></img><%= currentUser.username %></a></li> -->
 							<li><a href="/profiles/<%= currentUser.username %>"><%= currentUser.username %></a></li>
 							<li><a href="/logout">Logout</a></li>
 						<% } %>
@@ -81,17 +82,20 @@
 		  </div>
 		</div>
 
-		<div class="container">
+
 			<% if (error && error.length > 0) { %>
-				<div class="alert alert-danger alert-dismissible" role="alert">
-				  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				  <%= error %>
+				<div class="container">
+					<div class="alert alert-danger alert-dismissible" role="alert">
+					  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					  <%= error %>
+					</div>
 				</div>
 			<% } %>
 			<% if (success && success.length > 0) { %>
-				<div class="alert alert-success alert-dismissible" role="alert">
-				  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				  <%= success %>
+				<div class="container">
+					<div class="alert alert-success alert-dismissible" role="alert">
+					  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					  <%= success %>
+					</div>
 				</div>
 			<% } %>
-		</div>

@@ -1,3 +1,5 @@
+var Block = require("./block");
+
 module.exports = function(io, roomsHandler) {
 	io.on('connection', function (socket) {
 		var requestGranted = false;
@@ -9,7 +11,7 @@ module.exports = function(io, roomsHandler) {
 
 		if (!socket.handshake.session) {
 			// Connected user doesn't have a session
-
+			socket.disconnect();
 		} else {
 			roomid = socket.handshake.session.roomid;
 			room = roomsHandler.getRoomById(roomid);
@@ -23,7 +25,8 @@ module.exports = function(io, roomsHandler) {
 				username = getName();
 
 				player = {username: username,  color: room.availableColors.pop()};
-				socket.emit('all-players', {players: room.players, me: player});
+				socket.emit('all-players', {players: room.players, me: player, maxPlayers: room.maxPlayers});
+				socket.emit('board-state', room.blocks.getBlocksState())
 				room.players.push(player);
 				socket.emit('server-message', username + " has joined the room.");
 				socket.broadcast.to(roomid).emit('new-player', player);
@@ -63,13 +66,30 @@ module.exports = function(io, roomsHandler) {
 				if (index > -1) {
 					room.players.splice(index, 1);
 					room.availableColors.push(player.color);
+					if (room.players.length === 0) {
+						room.blocks.resetBlocks();
+					}
 				}
 			}
 		});
 
 		socket.on('flag-block', function(data) {
-			if (requestGranted) {
-				socket.broadcast.to(roomid).emit('flag-block', {color: player.color, x: data.x, y: data.y});
+			if (requestGranted && Number.isInteger(data.x) && Number.isInteger(data.y)) {
+				console.log("request to flag block");
+				var block = room.blocks.getBlock(data.x, data.y);
+				if (block.isUndefinedBlock) {
+					block = new Block();
+					room.blocks.setBlock(data.x, data.y, block);
+				}
+				if (!(block.flagColor === "") && (block.flagOwner === player.username)) {
+					console.log("unflag");
+					block.flagColor = "";
+					socket.broadcast.to(roomid).emit('unflag-block', {x: data.x, y: data.y});
+				} else {
+					socket.broadcast.to(roomid).emit('flag-block', {username: player.username, x: data.x, y: data.y});
+					block.flagColor = player.color;
+					block.flagOwner = player.username;
+				}
 			}
 		});
 

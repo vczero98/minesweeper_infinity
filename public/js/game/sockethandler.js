@@ -7,12 +7,14 @@ function SocketHandler(chatHandler, socket, playersManager, board) {
 		chatHandler.addServerMessage(player.username + " has joined the room.");
 		chatHandler.addPlayerToTable(player);
 		playersManager.addOtherPlayer(player);
+		displayPlayersNeeded();
 	});
 
 	socket.on('player-left', function (player) {
 		chatHandler.addServerMessage(player.username + " has left the room.");
 		chatHandler.removePlayerFromTable(player);
 		playersManager.removePlayer(player);
+		displayPlayersNeeded();
 	});
 
 	socket.on('chat-message', function (data) {
@@ -24,13 +26,19 @@ function SocketHandler(chatHandler, socket, playersManager, board) {
 	});
 
 	socket.on('all-players', function (data) {
+		playersManager.setMaxPlayers(data.maxPlayers);
 		data.players.forEach(function(player) {
 			chatHandler.addPlayerToTable(player);
 			playersManager.addOtherPlayer(player);
-			console.log(player);
 		});
 		playersManager.setMe(data.me);
 		chatHandler.addPlayerToTable(playersManager.getMe());
+		displayPlayersNeeded();
+	});
+
+	socket.on('board-state', function(data) {
+		board.getBlocks().setState(data);
+		board.drawBoard();
 	});
 
 	socket.on('color-change', function (data) {
@@ -42,15 +50,23 @@ function SocketHandler(chatHandler, socket, playersManager, board) {
 	});
 
 	socket.on('flag-block', function (data) {
-		console.log(data.x, data.y);
-		console.log("flagging player color: " + data.color);
-		board.flagBlock(data.x, data.y, data.color);
+		board.flagBlock(data.x, data.y, data.username);
+	});
+
+	socket.on('unflag-block', function (data) {
+		board.removeFlag(data.x, data.y);
 	});
 
 	socket.on('disconnect', function (data) {
 		window.location.href = "/rooms";
 	});
 
+	function displayPlayersNeeded() {
+		var n = playersManager.getPlayersNeeded();
+		var plural = (n === 1) ? "" : "s";
+		var str = "Waiting for " + n + " more player" + plural + "...";
+		$('#game-display p').text(str);
+	}
 
 	function flagBlock(x, y) {
 		socket.emit('flag-block', {x: x, y: y});

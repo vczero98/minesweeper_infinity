@@ -1,6 +1,7 @@
 function PlayersManager() {
 	var otherPlayers = [];
 	var me;
+	var maxPlayers;
 
 	function addOtherPlayer(player) {
 		otherPlayers.push(player);
@@ -19,11 +20,23 @@ function PlayersManager() {
 	}
 
 	function getPlayerByUsername(username) {
-		if (me.username = username) {
+		if (me.username === username) {
 			return me;
 		} else {
-			var result = $.grep(otherPlayers, function(player){ return player.username == username; });
+			return $.grep(otherPlayers, function(player){ return player.username == username; })[0];
 		}
+	}
+
+	function getMaxPlayers() {
+		return maxPlayers;
+	}
+
+	function setMaxPlayers(n) {
+		maxPlayers = n;
+	}
+
+	function getPlayersNeeded() {
+		return maxPlayers - (otherPlayers.length + 1);
 	}
 
 	PlayersManager.prototype.addOtherPlayer = addOtherPlayer;
@@ -31,4 +44,7 @@ function PlayersManager() {
 	PlayersManager.prototype.setMe = setMe;
 	PlayersManager.prototype.getMe = getMe;
 	PlayersManager.prototype.getPlayerByUsername = getPlayerByUsername;
+	PlayersManager.prototype.getMaxPlayers = getMaxPlayers;
+	PlayersManager.prototype.setMaxPlayers = setMaxPlayers;
+	PlayersManager.prototype.getPlayersNeeded = getPlayersNeeded;
 }

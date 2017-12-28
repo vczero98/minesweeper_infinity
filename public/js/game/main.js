@@ -26,16 +26,13 @@ window.onload = function() {
 		var x = Math.floor(xPos / board.blockSize - board.offsetX);
 		var y = Math.floor(yPos / board.blockSize - board.offsetY);
 
-		console.log(x + ", " + y);
-
 		if (evt.which == 1) {
 			// // If the click is a left click
 			board.clickBlock(x, y);
 			return;
 		} else if (evt.which == 3) {
-			console.log('attempted');
 			// If the click is a right click
-			if (board.flagBlock(x, y, playersManager.getMe().color)) {
+			if (board.flagBlock(x, y, playersManager.getMe().username)) {
 				socketHandler.flagBlock(x, y);
 			}
 			return;
