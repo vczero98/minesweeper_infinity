@@ -54,10 +54,19 @@ function Blocks() {
 		}
 	}
 
+	function revMap(n) {
+		if (n % 2 == 0) {
+			return n/-2;
+		} else {
+			return (n+1)/2;
+		}
+	}
+
 	Blocks.prototype.getBlock = getBlock;
 	Blocks.prototype.setBlock = setBlock;
 	Blocks.prototype.resetBlocks = resetBlocks;
 	Blocks.prototype.getBlocksState = getBlocksState;
+	Blocks.prototype.revMap = revMap;
 }
 
 module.exports = Blocks;

@@ -28,11 +28,13 @@ window.onload = function() {
 
 		if (evt.which == 1) {
 			// // If the click is a left click
+			console.log(x,y);
 			board.clickBlock(x, y);
 			return;
 		} else if (evt.which == 3) {
 			// If the click is a right click
 			if (board.flagBlock(x, y, playersManager.getMe().username)) {
+				console.log(x, y);
 				socketHandler.flagBlock(x, y);
 			}
 			return;

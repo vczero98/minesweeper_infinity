@@ -84,6 +84,7 @@ function Board(height, width, playersManager) {
 		} else {
 			console.log("found old block");
 		}
+		console.log(block);
 	}
 
 	function flagBlock(x, y, username) {

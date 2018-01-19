@@ -17,4 +17,5 @@ function Block() {
 	this.isUndefinedBlock = false;
 	this.expanded = false;
 	this.flagColor = "";
+	this.n = 0;
 }

@@ -15,6 +15,7 @@ module.exports = function(io, roomsHandler) {
 		} else {
 			roomid = socket.handshake.session.roomid;
 			room = roomsHandler.getRoomById(roomid);
+			// room.startGame();
 
 			if (room.players.length >= room.maxPlayers) {
 				// If room is full
