@@ -62,10 +62,10 @@ function Blocks() {
 		}
 	}
 
-	Blocks.prototype.getBlock = getBlock;
-	Blocks.prototype.setBlock = setBlock;
-	Blocks.prototype.resetBlocks = resetBlocks;
-	Blocks.prototype.getBlocksState = getBlocksState;
+	this.getBlock = getBlock;
+	this.setBlock = setBlock;
+	this.resetBlocks = resetBlocks;
+	this.getBlocksState = getBlocksState;
 	Blocks.prototype.revMap = revMap;
 }
 

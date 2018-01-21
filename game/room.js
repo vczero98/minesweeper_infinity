@@ -27,19 +27,36 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 		// Generating the rest of the pattern
 		const spread = 2;
 		for (var i = 1; i >= -1; i -= 2) {
-			var x = 20;
-			for (var j = 0; j <= 12; j++) {
-				var y = 10 + (i * j) + (i === -1 ? -1 : 0);
-				for (var k = 0; k < 7; k++) {
+			var y = 10;
+			for (var j = 0; j <= 15; j++) {
+				var x = 20 + (i * j) + (i === -1 ? -1 : 0);
+				for (var k = 0; k < 9; k++) {
 					var newBlock = new Block();
 					newBlock.protect();
-					self.blocks.setBlock(x + k, y, newBlock);
+					self.blocks.setBlock(x, y + k, newBlock);
 				}
-				if (y % 3 == 0) {
-					x += Math.floor(Math.random() * (spread * 2 - 1) - spread);
+				if (x % 3 == 0) {
+					y += Math.floor(Math.random() * (spread * 2) - spread);
 				}
 			}
 		}
+
+		// // Generating the rest of the pattern
+		// const spread = 2;
+		// for (var i = 1; i >= -1; i -= 2) {
+		// 	var x = 20;
+		// 	for (var j = 0; j <= 12; j++) {
+		// 		var y = 10 + (i * j) + (i === -1 ? -1 : 0);
+		// 		for (var k = 0; k < 7; k++) {
+		// 			var newBlock = new Block();
+		// 			newBlock.protect();
+		// 			self.blocks.setBlock(x + k, y, newBlock);
+		// 		}
+		// 		if (y % 3 == 0) {
+		// 			x += Math.floor(Math.random() * (spread * 2 - 1) - spread);
+		// 		}
+		// 	}
+		// }
 	}
 
 	function startGame() {
@@ -139,9 +156,9 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 		return updates;
 	}
 
-	Room.prototype.startGame = startGame;
-	Room.prototype.getNumPlayers = getNumPlayers;
-	Room.prototype.isFull = isFull;
+	this.startGame = startGame;
+	this.getNumPlayers = getNumPlayers;
+	this.isFull = isFull;
 }
 
 module.exports = Room;

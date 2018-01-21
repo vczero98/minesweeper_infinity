@@ -10,7 +10,7 @@ function Block() {
 
 	this.protect = function() {
 		isProtected = true;
-		// self.flagColor = "purple";
+		self.flagColor = "purple";
 	}
 
 	this.isProtected = function() {
