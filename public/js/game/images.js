@@ -15,9 +15,9 @@ function Images() {
 	this.flag_yellow = new Image();
 	this.flag_yellow.src = location + "flag_yellow.png";
 
-	this.e0 = new Image();
-	this.e0.src = location + "0.png";
-
-	this.e1 = new Image();
-	this.e1.src = location + "1.png";
+	this.n = [];
+	for (var i = 0; i < 9; i++) {
+		this.n[i] = new Image();
+		this.n[i].src = location + i + ".png";
+	}
 }

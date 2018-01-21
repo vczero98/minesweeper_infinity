@@ -15,16 +15,28 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 	startGame();
 
 	function protectRange() {
-		const spread = 3;
-		for (var i = 1; i >= -1; i -= 2) {
-			var x = 20;
-			for (var j = 0; j <= 6; j++) {
-				var y = 10 + (i * j) + (i === -1 ? -1 : 0);
-				x += Math.floor(Math.random() * (spread * 2 - 1) - spread);
+		// Protecting around (20,10)
+		for (var x = 19; x <= 21; x++) {
+			for (var y = 9; y <= 11; y++) {
 				var newBlock = new Block();
 				newBlock.protect();
-				for (var k = 0; k < 3; k++) {
+				self.blocks.setBlock(x, y, newBlock);
+			}
+		}
+
+		// Generating the rest of the pattern
+		const spread = 2;
+		for (var i = 1; i >= -1; i -= 2) {
+			var x = 20;
+			for (var j = 0; j <= 12; j++) {
+				var y = 10 + (i * j) + (i === -1 ? -1 : 0);
+				for (var k = 0; k < 7; k++) {
+					var newBlock = new Block();
+					newBlock.protect();
 					self.blocks.setBlock(x + k, y, newBlock);
+				}
+				if (y % 3 == 0) {
+					x += Math.floor(Math.random() * (spread * 2 - 1) - spread);
 				}
 			}
 		}
@@ -37,6 +49,7 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 		// var block = new Block();
 		// block.flagColor = "yellow";
 		// self.blocks.setBlock(40,28,block);
+		expandBlock(20,10);
 	}
 
 	function getNumPlayers() {
@@ -95,6 +108,35 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 				}
 			}
 		}
+	}
+
+	function expandBlock(x, y) {
+		var updates = [];
+		var block = self.blocks.getBlock(x, y);
+		if (block.isUndefinedBlock) {
+			block = new Block();
+		}
+		if (block.expanded) {
+			return [];
+		}
+		if (block.isMine()) {
+			block.exploadedMine = true;
+			return [{x: x, y: y, block: block}];
+		}
+		block.expanded = true;
+		self.blocks.setBlock(x,y,block);
+		if (block.n == 0) {
+			// Expanding neighbors
+			for (var i = x - 1; i <= x + 1; i++) {
+				for (var j = y - 1; j <= y + 1; j++) {
+					if (!(i == x && j == y)) {
+						updates = updates.concat(expandBlock(i, j));
+					}
+				}
+			}
+		}
+		updates.push({x: x, y: y, block: block});
+		return updates;
 	}
 
 	Room.prototype.startGame = startGame;

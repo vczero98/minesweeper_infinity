@@ -67,9 +67,9 @@ module.exports = function(io, roomsHandler) {
 				if (index > -1) {
 					room.players.splice(index, 1);
 					room.availableColors.push(player.color);
-					if (room.players.length === 0) {
-						room.blocks.resetBlocks();
-					}
+					// if (room.players.length === 0) {
+					// 	room.blocks.resetBlocks();
+					// }
 				}
 			}
 		});
@@ -92,6 +92,11 @@ module.exports = function(io, roomsHandler) {
 					block.flagOwner = player.username;
 				}
 			}
+		});
+
+		socket.on('expand-block', function(data) {
+			var updates = room.blocks.expandBlock(data.x, data.y);
+			io.to(roomid).emit('update-world', {updates: updates});
 		});
 
 		function getName() {

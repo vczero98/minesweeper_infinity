@@ -57,6 +57,10 @@ function SocketHandler(chatHandler, socket, playersManager, board) {
 		board.removeFlag(data.x, data.y);
 	});
 
+	socket.on('update-world', function (updates) {
+		// board.blocks
+	});
+
 	socket.on('disconnect', function (data) {
 		window.location.href = "/rooms";
 	});

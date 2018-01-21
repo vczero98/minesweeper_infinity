@@ -38,7 +38,7 @@ function Board(height, width, playersManager) {
 		if (block.isUndefinedBlock) {
 			img = images.unexpanded;
 		} else if (block.expanded) {
-			img = images.e0;
+			img = images.n[block.n];
 		} else if (!(block.flagColor === "")) {
 			switch (block.flagColor) {
 				case "red":
@@ -57,7 +57,6 @@ function Board(height, width, playersManager) {
 		} else {
 			img = images.unexpanded;
 		}
-
 		if (img) {
 			ctx.drawImage(img, (x + self.offsetX) * self.blockSize, (y + self.offsetY) * self.blockSize);
 		}
@@ -78,12 +77,10 @@ function Board(height, width, playersManager) {
 		var block = blocks.getBlock(x, y);
 		if (block.isUndefinedBlock) {
 			block = new Block();
-			blocks.setBlock(x, y, block);
-			block.expanded = true;
-			drawBlock(x, y);
-		} else {
-			console.log("found old block");
 		}
+		block.expanded = true;
+		blocks.setBlock(x, y, block);
+		drawBlock(x, y);
 		console.log(block);
 	}
 

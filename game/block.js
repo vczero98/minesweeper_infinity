@@ -4,12 +4,13 @@ function Block() {
 	this.expanded = false;
 	this.flagColor = "";
 	this.n = 0;
+	this.exploadedMine = false;
 	var isProtected = false;
 	var mine = false;
 
 	this.protect = function() {
 		isProtected = true;
-		self.flagColor = "purple";
+		// self.flagColor = "purple";
 	}
 
 	this.isProtected = function() {
@@ -18,7 +19,7 @@ function Block() {
 
 	this.setMine = function() {
 		mine = true;
-		self.flagColor = "red";
+		// self.flagColor = "red";
 	}
 
 	this.isMine = function() {

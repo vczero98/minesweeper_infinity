@@ -18,4 +18,5 @@ function Block() {
 	this.expanded = false;
 	this.flagColor = "";
 	this.n = 0;
+	this.exploadedMine = false;
 }
