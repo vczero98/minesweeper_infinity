@@ -8,7 +8,6 @@ window.onload = function() {
 	var cWidth = document.documentElement.clientWidth - 320;
 	var playersManager = new PlayersManager();
 	var board = new Board(cHeight, cWidth, playersManager);
-	this.board = board;
 
 	// board.drawBoard(true);
 	var socket = io();
@@ -77,6 +76,17 @@ window.onload = function() {
 	  });
 	});
 
+	var resizeTimer;
+	$(window).resize(function () {
+		clearTimeout(resizeTimer);
+	  resizeTimer = setTimeout(function() {
+			var cHeight = document.documentElement.clientHeight - 50;
+			var cWidth = document.documentElement.clientWidth - 320;
+			board.resizeBoard(cHeight, cWidth);
+			console.log("resized");
+		}, 100);
+	});
+
 	inputMessage = function() {
 		var message = $("#chat-message").val();
 		chatHandler.inputMessage(message, socket);
@@ -84,7 +94,6 @@ window.onload = function() {
 		return false;
 	}
 }
-
 
 //
 // window.onkeyup = function(e) {

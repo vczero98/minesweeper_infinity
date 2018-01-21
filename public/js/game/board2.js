@@ -8,6 +8,8 @@ function Board(height, width, playersManager) {
 	var height = height;
 	var width = width;
 
+	var canvas;
+
 	this.offsetX = 0;
 	this.offsetY = 0;
 	// var img = new Image();
@@ -123,6 +125,8 @@ function Board(height, width, playersManager) {
 		canvas.oncontextmenu = function() {
 			return false;
 		}
+		self.offsetX = Math.floor((width/self.blockSize)/2) - 20
+		self.offsetY = Math.floor((height/self.blockSize)/2) - 10
 	}
 
 // 	drawBoard() {
@@ -142,6 +146,14 @@ function Board(height, width, playersManager) {
 		return blocks;
 	}
 
+	function resizeBoard(newHeight, newWidth) {
+		height = newHeight;
+		width = newWidth;
+		canvas.height = height;
+		canvas.width = width;
+		drawBoard();
+	}
+
 	Board.prototype.clickBlock = clickBlock;
 	Board.prototype.drawBoard = drawBoard;
 	Board.prototype.drawBlock = drawBlock;
@@ -149,4 +161,5 @@ function Board(height, width, playersManager) {
 	Board.prototype.removeFlag = removeFlag;
 	Board.prototype.getCanvas = getCanvas;
 	Board.prototype.getBlocks = getBlocks;
+	Board.prototype.resizeBoard = resizeBoard;
 }
