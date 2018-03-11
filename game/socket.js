@@ -83,10 +83,11 @@ module.exports = function(io, roomsHandler) {
 					room.blocks.setBlock(data.x, data.y, block);
 				}
 				if (!(block.flagColor === "") && (block.flagOwner === player.username)) {
+					// If the block is flagged by the user
 					console.log("unflag");
 					block.flagColor = "";
 					socket.broadcast.to(roomid).emit('unflag-block', {x: data.x, y: data.y});
-				} else {
+				} else if (block.flagColor === "") {
 					socket.broadcast.to(roomid).emit('flag-block', {username: player.username, x: data.x, y: data.y});
 					block.flagColor = player.color;
 					block.flagOwner = player.username;

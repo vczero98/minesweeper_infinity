@@ -50,6 +50,10 @@ function PlayersManager() {
 		 playerTableHandler = new PlayerTableHandler(maxPlayers);
 	}
 
+	function getTableHandler() {
+		return playerTableHandler;
+	}
+
 	this.addOtherPlayer = addOtherPlayer;
 	this.removePlayer = removePlayer;
 	this.setMe = setMe;
@@ -60,4 +64,5 @@ function PlayersManager() {
 	this.getPlayersNeeded = getPlayersNeeded;
 	this.addPlayerToTable = addPlayerToTable;
 	this.createTable = createTable;
+	this.getTableHandler = getTableHandler;
 }

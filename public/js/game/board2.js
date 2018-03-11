@@ -105,6 +105,7 @@ function Board(height, width, playersManager) {
 			block.flagColor = player.color;
 			block.flagOwner = username;
 			drawBlock(x, y);
+			playersManager.getTableHandler().incrementFlags(username);
 			return true;
 		} else if (block.flagOwner === playersManager.getMe().username) {
 			// Remove the block flag
@@ -115,6 +116,7 @@ function Board(height, width, playersManager) {
 	}
 
 	function removeFlag(x, y) {
+		playersManager.getTableHandler().decrementFlags(username);
 		var block = blocks.getBlock(x, y);
 		block.flagColor = "";
 		drawBlock(x, y);
