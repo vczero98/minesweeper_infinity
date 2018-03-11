@@ -95,7 +95,7 @@ module.exports = function(io, roomsHandler) {
 		});
 
 		socket.on('expand-block', function(data) {
-			var updates = room.blocks.expandBlock(data.x, data.y);
+			var updates = room.expandBlock(data.x, data.y);
 			io.to(roomid).emit('update-world', {updates: updates});
 		});
 

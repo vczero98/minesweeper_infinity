@@ -128,6 +128,7 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 	}
 
 	function expandBlock(x, y) {
+		console.log("expanding " + x + ", " + y);
 		var updates = [];
 		var block = self.blocks.getBlock(x, y);
 		if (block.isUndefinedBlock) {
@@ -159,6 +160,7 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 	this.startGame = startGame;
 	this.getNumPlayers = getNumPlayers;
 	this.isFull = isFull;
+	this.expandBlock = expandBlock;
 }
 
 module.exports = Room;

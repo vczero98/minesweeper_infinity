@@ -57,8 +57,8 @@ function SocketHandler(chatHandler, socket, playersManager, board) {
 		board.removeFlag(data.x, data.y);
 	});
 
-	socket.on('update-world', function (updates) {
-		// board.blocks
+	socket.on('update-world', function (data) {
+		board.updateWorld(data.updates);
 	});
 
 	socket.on('disconnect', function (data) {
@@ -76,5 +76,10 @@ function SocketHandler(chatHandler, socket, playersManager, board) {
 		socket.emit('flag-block', {x: x, y: y});
 	}
 
+	function expandBlock(x, y) {
+		socket.emit("expand-block", {x: x, y: y});
+	}
+
 	SocketHandler.prototype.flagBlock = flagBlock;
+	SocketHandler.prototype.expandBlock = expandBlock;
 }

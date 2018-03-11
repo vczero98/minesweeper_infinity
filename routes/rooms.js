@@ -17,16 +17,16 @@ module.exports = function(roomsHandler) {
 		var name = req.body.name;
 		var maxPlayers = parseInt(req.body.maxPlayers);
 		var timer = parseInt(req.body.timer);
-		console.log(req.body.private);
 		var isPrivate = req.body.private === "on";
 
-		if (name === "") {
-			res.redirect("/rooms");
-		} else if (isNaN(maxPlayers)) {
-			res.redirect("/rooms");
-		}	else if (isNaN(timer)) {
-			res.redirect("/rooms");
-		} else if (maxPlayers < 2 || maxPlayers > 4) {
+		var invalid = false;
+		invalid |= (name === "");
+		invalid |= (name.length > 35);
+		invalid |= (isNaN(maxPlayers));
+		invalid |= (isNaN(timer));
+		invalid |= (maxPlayers < 2 || maxPlayers > 4);
+
+		if (invalid) {
 			res.redirect("/rooms");
 		} else {
 			var newRoom = new Room(id, name, maxPlayers, timer, isPrivate);

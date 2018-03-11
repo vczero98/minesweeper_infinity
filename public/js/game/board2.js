@@ -80,10 +80,17 @@ function Board(height, width, playersManager) {
 		if (block.isUndefinedBlock) {
 			block = new Block();
 		}
-		block.expanded = true;
-		blocks.setBlock(x, y, block);
-		drawBlock(x, y);
-		console.log(block);
+
+		// Check that the block is not flagged
+		if (block.flagColor === "") {
+			block.expanded = true;
+			blocks.setBlock(x, y, block);
+			drawBlock(x, y);
+			console.log(block);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	function flagBlock(x, y, username) {
@@ -126,7 +133,7 @@ function Board(height, width, playersManager) {
 			return false;
 		}
 		self.offsetX = Math.floor((width/self.blockSize)/2) - 20
-		self.offsetY = Math.floor((height/self.blockSize)/2) - 10
+		self.offsetY = Math.floor((height/self.blockSize)/2) - 12
 	}
 
 // 	drawBoard() {
@@ -154,12 +161,22 @@ function Board(height, width, playersManager) {
 		drawBoard();
 	}
 
-	Board.prototype.clickBlock = clickBlock;
-	Board.prototype.drawBoard = drawBoard;
-	Board.prototype.drawBlock = drawBlock;
-	Board.prototype.flagBlock = flagBlock;
-	Board.prototype.removeFlag = removeFlag;
-	Board.prototype.getCanvas = getCanvas;
-	Board.prototype.getBlocks = getBlocks;
-	Board.prototype.resizeBoard = resizeBoard;
+	function updateWorld(updates) {
+		for (var i = 0; i < updates.length; i++) {
+			var update = updates[i];
+			console.log(update);
+			blocks.setBlock(update.x, update.y, update.block);
+			drawBlock(update.x, update.y);
+		}
+	}
+
+	this.clickBlock = clickBlock;
+	this.drawBoard = drawBoard;
+	this.drawBlock = drawBlock;
+	this.flagBlock = flagBlock;
+	this.removeFlag = removeFlag;
+	this.getCanvas = getCanvas;
+	this.getBlocks = getBlocks;
+	this.resizeBoard = resizeBoard;
+	this.updateWorld = updateWorld;
 }

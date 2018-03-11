@@ -7,8 +7,8 @@ window.onload = function() {
 	var cHeight = document.documentElement.clientHeight - 50;
 	var cWidth = document.documentElement.clientWidth - 320;
 	var playersManager = new PlayersManager();
-	var board = new Board(cHeight, cWidth, playersManager);
 
+	var board = new Board(cHeight, cWidth, playersManager, null);
 	// board.drawBoard(true);
 	var socket = io();
 	var chatHandler = new ChatHandler();
@@ -28,7 +28,9 @@ window.onload = function() {
 		if (evt.which == 1) {
 			// // If the click is a left click
 			console.log(x,y);
-			board.clickBlock(x, y);
+			if (board.clickBlock(x, y)) {
+				socketHandler.expandBlock(x, y);
+			}
 			return;
 		} else if (evt.which == 3) {
 			// If the click is a right click
