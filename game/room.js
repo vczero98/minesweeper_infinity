@@ -128,7 +128,6 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 	}
 
 	function expandBlock(x, y) {
-		console.log("expanding " + x + ", " + y);
 		var updates = [];
 		var block = self.blocks.getBlock(x, y);
 		if (block.isUndefinedBlock) {
