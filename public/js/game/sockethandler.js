@@ -5,15 +5,13 @@ function SocketHandler(chatHandler, socket, playersManager, board) {
 
 	socket.on('new-player', function (player) {
 		chatHandler.addServerMessage(player.username + " has joined the room.");
-		chatHandler.addPlayerToTable(player);
 		playersManager.addOtherPlayer(player);
 		displayPlayersNeeded();
 	});
 
-	socket.on('player-left', function (player) {
-		chatHandler.addServerMessage(player.username + " has left the room.");
-		chatHandler.removePlayerFromTable(player);
-		playersManager.removePlayer(player);
+	socket.on('player-left', function (username) {
+		chatHandler.addServerMessage(username + " has left the room.");
+		playersManager.removePlayer(username);
 		displayPlayersNeeded();
 	});
 
@@ -27,12 +25,12 @@ function SocketHandler(chatHandler, socket, playersManager, board) {
 
 	socket.on('all-players', function (data) {
 		playersManager.setMaxPlayers(data.maxPlayers);
+		playersManager.createTable();
 		data.players.forEach(function(player) {
-			chatHandler.addPlayerToTable(player);
 			playersManager.addOtherPlayer(player);
 		});
 		playersManager.setMe(data.me);
-		chatHandler.addPlayerToTable(playersManager.getMe());
+		playersManager.addPlayerToTable(playersManager.getMe());
 		displayPlayersNeeded();
 	});
 

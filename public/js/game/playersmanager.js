@@ -2,13 +2,16 @@ function PlayersManager() {
 	var otherPlayers = [];
 	var me;
 	var maxPlayers;
+	var playerTableHandler;
 
 	function addOtherPlayer(player) {
 		otherPlayers.push(player);
+		playerTableHandler.addPlayer(player);
 	}
 
-	function removePlayer(player) {
-		otherPlayers.splice(otherPlayers.indexOf(player), 1);
+	function removePlayer(username) {
+		otherPlayers.splice(otherPlayers.indexOf(getPlayerByUsername(username)), 1);
+		playerTableHandler.removePlayer(username);
 	}
 
 	function setMe(player) {
@@ -39,12 +42,22 @@ function PlayersManager() {
 		return maxPlayers - (otherPlayers.length + 1);
 	}
 
-	PlayersManager.prototype.addOtherPlayer = addOtherPlayer;
-	PlayersManager.prototype.removePlayer = removePlayer;
-	PlayersManager.prototype.setMe = setMe;
-	PlayersManager.prototype.getMe = getMe;
-	PlayersManager.prototype.getPlayerByUsername = getPlayerByUsername;
-	PlayersManager.prototype.getMaxPlayers = getMaxPlayers;
-	PlayersManager.prototype.setMaxPlayers = setMaxPlayers;
-	PlayersManager.prototype.getPlayersNeeded = getPlayersNeeded;
+	function addPlayerToTable(player) {
+		playerTableHandler.addPlayer(player);
+	}
+
+	function createTable() {
+		 playerTableHandler = new PlayerTableHandler(maxPlayers);
+	}
+
+	this.addOtherPlayer = addOtherPlayer;
+	this.removePlayer = removePlayer;
+	this.setMe = setMe;
+	this.getMe = getMe;
+	this.getPlayerByUsername = getPlayerByUsername;
+	this.getMaxPlayers = getMaxPlayers;
+	this.setMaxPlayers = setMaxPlayers;
+	this.getPlayersNeeded = getPlayersNeeded;
+	this.addPlayerToTable = addPlayerToTable;
+	this.createTable = createTable;
 }

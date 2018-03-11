@@ -25,7 +25,7 @@ module.exports = function(io, roomsHandler) {
 				socket.join(roomid);
 				username = getName();
 
-				player = {username: username,  color: room.availableColors.pop()};
+				player = {username: username,  color: room.availableColors.pop(), nFlags: 0, nExpanded: 0};
 				socket.emit('all-players', {players: room.players, me: player, maxPlayers: room.maxPlayers});
 				socket.emit('board-state', room.blocks.getBlocksState())
 				room.players.push(player);
@@ -61,7 +61,7 @@ module.exports = function(io, roomsHandler) {
 
 		socket.on('disconnect', function() {
 			if (requestGranted) {
-				socket.broadcast.to(roomid).emit('player-left', player);
+				socket.broadcast.to(roomid).emit('player-left', player.username);
 
 				var index = room.players.indexOf(player);
 				if (index > -1) {
