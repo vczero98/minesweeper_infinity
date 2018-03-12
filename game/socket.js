@@ -99,10 +99,15 @@ module.exports = function(io, roomsHandler) {
 
 		socket.on('expand-block', function(data) {
 			// TODO: do expansion checking
-			var updates = room.expandBlock(data.x, data.y);
-			player.nExpanded++;
+			var updates = room.expandBlock(data.x, data.y, player.color);
+			if (updates.length === 1 && updates[0].exploadedMine !== "") {
+				// User clicked on a mine
+
+			} else {
+				player.nExpanded++;
+				io.to(roomid).emit('block-expanded', {username: player.username, n: player.nExpanded});
+			}
 			io.to(roomid).emit('update-world', {updates: updates});
-			io.to(roomid).emit('block-expanded', {username: player.username, n: player.nExpanded});
 		});
 
 		function getName() {

@@ -39,7 +39,22 @@ function Board(height, width, playersManager) {
 		// 	}
 		if (block.isUndefinedBlock) {
 			img = images.unexpanded;
-		} else if (block.expanded) {
+		} else if (block.exploadedMine !== "") {
+			switch (block.exploadedMine) {
+				case "red":
+					img = images.mine_red
+					break;
+				case "green":
+					img = images.mine_green
+					break;
+				case "purple":
+					img = images.mine_purple
+					break;
+				case "yellow":
+					img = images.mine_yellow
+					break;
+			}
+		}	else if (block.expanded) {
 			img = images.n[block.n];
 		} else if (!(block.flagColor === "")) {
 			switch (block.flagColor) {
@@ -86,7 +101,6 @@ function Board(height, width, playersManager) {
 			block.expanded = true;
 			blocks.setBlock(x, y, block);
 			drawBlock(x, y);
-			console.log(block);
 			return true;
 		} else {
 			return false;

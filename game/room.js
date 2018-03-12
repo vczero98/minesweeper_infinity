@@ -127,7 +127,7 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 		}
 	}
 
-	function expandBlock(x, y) {
+	function expandBlock(x, y, color) {
 		var updates = [];
 		var block = self.blocks.getBlock(x, y);
 		if (block.isUndefinedBlock) {
@@ -137,7 +137,7 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 			return [];
 		}
 		if (block.isMine()) {
-			block.exploadedMine = true;
+			block.exploadedMine = color;
 			return [{x: x, y: y, block: block}];
 		}
 		block.expanded = true;

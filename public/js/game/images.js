@@ -15,6 +15,18 @@ function Images() {
 	this.flag_yellow = new Image();
 	this.flag_yellow.src = location + "flag_yellow.png";
 
+	this.mine_red = new Image();
+	this.mine_red.src = location + "mine_red.png";
+
+	this.mine_green = new Image();
+	this.mine_green.src = location + "mine_green.png";
+
+	this.mine_purple = new Image();
+	this.mine_purple.src = location + "mine_purple.png";
+
+	this.mine_yellow = new Image();
+	this.mine_yellow.src = location + "mine_yellow.png";
+
 	this.n = [];
 	for (var i = 0; i < 9; i++) {
 		this.n[i] = new Image();

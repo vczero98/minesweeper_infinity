@@ -4,7 +4,7 @@ function Block() {
 	this.expanded = false;
 	this.flagColor = "";
 	this.n = 0;
-	this.exploadedMine = false;
+	this.exploadedMine = "";
 	var isProtected = false;
 	var mine = false;
 
