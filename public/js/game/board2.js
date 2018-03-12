@@ -96,15 +96,40 @@ function Board(height, width, playersManager) {
 			block = new Block();
 		}
 
-		// Check that the block is not flagged
-		if (block.flagColor === "") {
-			block.expanded = true;
-			blocks.setBlock(x, y, block);
-			drawBlock(x, y);
-			return true;
+		if (!block.expanded) {
+			// Check that the block is not flagged
+			if (block.flagColor === "") {
+				block.expanded = true;
+				blocks.setBlock(x, y, block);
+				drawBlock(x, y);
+				return [{x: x, y: y}];
+			} else {
+				return [];
+			}
 		} else {
-			return false;
+			// If the block is already expanded
+			var neighbors = blocks.getNeighbors(x, y);
+
+			// Check if all mines around have been flagged
+			var nFlagged = 0;
+			for (var i = 0; i < neighbors.length; i++) {
+				var neighbor = blocks.getBlock(neighbors[i].x, neighbors[i].y);
+				if (!neighbor.isUndefinedBlock && neighbor.flagColor !== "")
+					nFlagged++;
+			}
+			if (block.n !== nFlagged)
+				return [];
+
+			// All neighbors can be expanded, return neighbors to expand
+			var toExpand = [];
+			for (var i = 0; i < neighbors.length; i++) {
+				var neighbor = blocks.getBlock(neighbors[i].x, neighbors[i].y);
+				if (neighbor.isUndefinedBlock || (!neighbor.expanded && neighbor.flagColor === ""))
+					toExpand.push({x: neighbors[i].x, y: neighbors[i].y});
+			}
+			return toExpand;
 		}
+
 	}
 
 	function flagBlock(x, y, username) {
@@ -180,7 +205,6 @@ function Board(height, width, playersManager) {
 	function updateWorld(updates) {
 		for (var i = 0; i < updates.length; i++) {
 			var update = updates[i];
-			console.log(update);
 			blocks.setBlock(update.x, update.y, update.block);
 			drawBlock(update.x, update.y);
 		}

@@ -100,7 +100,7 @@ module.exports = function(io, roomsHandler) {
 		socket.on('expand-block', function(data) {
 			// TODO: do expansion checking
 			var updates = room.expandBlock(data.x, data.y, player.color);
-			if (updates.length === 1 && updates[0].exploadedMine !== "") {
+			if (updates.length === 1 && updates[0].block.exploadedMine !== "") {
 				// User clicked on a mine
 
 			} else {

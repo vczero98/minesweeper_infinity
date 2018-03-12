@@ -28,8 +28,11 @@ window.onload = function() {
 		if (evt.which == 1) {
 			// // If the click is a left click
 			console.log(x,y);
-			if (board.clickBlock(x, y)) {
-				socketHandler.expandBlock(x, y);
+			var blocksToExpand = board.clickBlock(x, y);
+			console.log("clicked on ", x, y);
+			for (var i = 0; i < blocksToExpand.length; i++) {
+				var block = blocksToExpand[i];
+				socketHandler.expandBlock(block.x, block.y);
 			}
 			return;
 		} else if (evt.which == 3) {

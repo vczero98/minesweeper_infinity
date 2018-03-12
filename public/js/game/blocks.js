@@ -54,8 +54,22 @@ function Blocks() {
 		}
 	}
 
-	Blocks.prototype.getBlock = getBlock;
-	Blocks.prototype.setBlock = setBlock;
-	Blocks.prototype.getState = getState;
-	Blocks.prototype.setState = setState;
+	function getNeighbors(x, y) {
+		var neighbors = [];
+		// Expanding neighbors
+		for (var i = x - 1; i <= x + 1; i++) {
+			for (var j = y - 1; j <= y + 1; j++) {
+				if (!(i == x && j == y)) {
+					neighbors.push({x: i, y: j});
+				}
+			}
+		}
+		return neighbors;
+	}
+
+	this.getBlock = getBlock;
+	this.setBlock = setBlock;
+	this.getState = getState;
+	this.setState = setState;
+	this.getNeighbors = getNeighbors;
 }
