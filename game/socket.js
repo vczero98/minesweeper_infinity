@@ -86,8 +86,10 @@ module.exports = function(io, roomsHandler) {
 					// If the block is flagged by the user
 					console.log("unflag");
 					block.flagColor = "";
-					socket.broadcast.to(roomid).emit('unflag-block', {x: data.x, y: data.y});
+					player.nFlags--;
+					socket.broadcast.to(roomid).emit('unflag-block', {username: player.username, x: data.x, y: data.y});
 				} else if (block.flagColor === "") {
+					player.nFlags++;
 					socket.broadcast.to(roomid).emit('flag-block', {username: player.username, x: data.x, y: data.y});
 					block.flagColor = player.color;
 					block.flagOwner = player.username;
@@ -96,8 +98,11 @@ module.exports = function(io, roomsHandler) {
 		});
 
 		socket.on('expand-block', function(data) {
+			// TODO: do expansion checking
 			var updates = room.expandBlock(data.x, data.y);
+			player.nExpanded++;
 			io.to(roomid).emit('update-world', {updates: updates});
+			io.to(roomid).emit('block-expanded', {username: player.username, n: player.nExpanded});
 		});
 
 		function getName() {

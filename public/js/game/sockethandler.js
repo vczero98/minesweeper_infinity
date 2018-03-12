@@ -52,7 +52,11 @@ function SocketHandler(chatHandler, socket, playersManager, board) {
 	});
 
 	socket.on('unflag-block', function (data) {
-		board.removeFlag(data.x, data.y);
+		board.removeFlag(data.x, data.y, data.username);
+	});
+
+	socket.on('block-expanded', function (data) {
+		playersManager.getTableHandler().updateExpanded(data.username, data.n);
 	});
 
 	socket.on('update-world', function (data) {

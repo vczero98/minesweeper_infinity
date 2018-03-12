@@ -109,13 +109,13 @@ function Board(height, width, playersManager) {
 			return true;
 		} else if (block.flagOwner === playersManager.getMe().username) {
 			// Remove the block flag
-			removeFlag(x, y);
+			removeFlag(x, y, playersManager.getMe().username);
 			return true;
 		}
 		return false;
 	}
 
-	function removeFlag(x, y) {
+	function removeFlag(x, y, username) {
 		playersManager.getTableHandler().decrementFlags(username);
 		var block = blocks.getBlock(x, y);
 		block.flagColor = "";
