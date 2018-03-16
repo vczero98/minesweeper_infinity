@@ -126,14 +126,56 @@ html, body {
 	text-align: center;
 }
 
-#game-item {
+.game-item {
 	display: inline-block;
 	height: 70px;
 	width: 70px;
 	margin: 0 20px;
 	background-color: gray;
-	border: 3px solid #420000;
+	border: 4px ridge #420000;
 	border-radius: 10px;
+	padding: 6px;
+	cursor: pointer;
+}
+
+.game-item img {
+	height: 50px;
+	/* filter: grayscale(100%); */
+	user-drag: none;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-drag: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+#item-radar {
+	background: linear-gradient(to bottom right, #1f771f, #083508);
+	border-color: #0e2104;
+}
+
+#item-freeze {
+	background: linear-gradient(to bottom right, #67bed8, #33849c);
+/* background-color: #4299b3; */
+	border-color: #032926;
+}
+
+#item-weightless-shoes {
+	background: linear-gradient(to bottom right, #866853, #503827);
+/* background-color: #694d39; */
+	border-color: #291709;
+}
+
+#item-blurred-vision {
+	background: linear-gradient(to bottom right, #a75e9a, #5d2d54);
+	/* background-color: #96508a; */
+	border-color: #2d0426;
+}
+
+#item-lucky-moves {
+	background: linear-gradient(to bottom right, #21d226, #08730c);
+	/* background-color: #0fad14; */
+	border-color: #0f3e11;
 }
 
 #stat-bar {

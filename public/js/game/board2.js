@@ -3,6 +3,10 @@ function Board(height, width, playersManager) {
 	var playerMe = playerMe;
 	var ctx;
 	var blocks = new Blocks();
+	this.oldHoveringBlock = undefined;
+	this.newHoveringBlock = undefined;
+	this.selectedItem = undefined;
+	this.oldSelectedSize = 0;
 
 	this.blockSize = 24;
 	var height = height;
@@ -74,8 +78,14 @@ function Board(height, width, playersManager) {
 		} else {
 			img = images.unexpanded;
 		}
+
 		if (img) {
 			ctx.drawImage(img, (x + self.offsetX) * self.blockSize, (y + self.offsetY) * self.blockSize);
+		}
+		if (block.hovering && self.selectedItem) {
+			ctx.fillStyle = self.selectedItem.fillColor;
+			ctx.fillRect((x + self.offsetX) * self.blockSize, (y + self.offsetY) * self.blockSize, self.blockSize, self.blockSize);
+			// ctx.strokeRect((x + self.offsetX) * self.blockSize + 1, (y + self.offsetY) * self.blockSize + 1, self.blockSize - 2, self.blockSize - 2);
 		}
 	}
 
@@ -210,6 +220,33 @@ function Board(height, width, playersManager) {
 		}
 	}
 
+	function hoveringBlockUpdated() {
+		var oBlock = self.oldHoveringBlock;
+		var nBlock = self.newHoveringBlock;
+		// const mid = 0;
+		if (oBlock) {
+			const oldMid = Math.floor((self.oldSelectedSize - 0.5) / 2);
+			for (var i = 0; i < self.oldSelectedSize; i++) {
+				for (var j = 0; j < self.oldSelectedSize; j++) {
+					blocks.getBlock(oBlock.x + i - oldMid, oBlock.y + j - oldMid).hovering = undefined;
+					drawBlock(oBlock.x + i - oldMid, oBlock.y + j - oldMid);
+				}
+			}
+		}
+		if (nBlock) {
+			const size = self.selectedItem.range;
+			const mid = Math.floor((size - 0.5) / 2);
+			for (var i = 0; i < size; i++) {
+				for (var j = 0; j < size; j++) {
+					blocks.getBlock(nBlock.x + i - mid, nBlock.y + j - mid).hovering = true;
+					drawBlock(nBlock.x + i - mid, nBlock.y + j - mid);
+				}
+			}
+			ctx.strokeRect((nBlock.x + self.offsetX - mid) * self.blockSize + 1, (nBlock.y + self.offsetY - mid) * self.blockSize + 1, self.blockSize * size - 2, self.blockSize * size - 2);
+			self.oldSelectedSize = size;
+		}
+	}
+
 	this.clickBlock = clickBlock;
 	this.drawBoard = drawBoard;
 	this.drawBlock = drawBlock;
@@ -219,4 +256,5 @@ function Board(height, width, playersManager) {
 	this.getBlocks = getBlocks;
 	this.resizeBoard = resizeBoard;
 	this.updateWorld = updateWorld;
+	this.hoveringBlockUpdated = hoveringBlockUpdated;
 }
