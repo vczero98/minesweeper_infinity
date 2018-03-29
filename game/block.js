@@ -7,6 +7,7 @@ function Block() {
 	this.exploadedMine = "";
 	var isProtected = false;
 	var mine = false;
+	var blurredBy = [];
 
 	this.protect = function() {
 		isProtected = true;
@@ -24,6 +25,15 @@ function Block() {
 
 	this.isMine = function() {
 		return mine;
+	}
+
+	this.blurBy = function(username) {
+		if (!blurredBy.includes(username))
+			blurredBy.push(username);
+	}
+
+	this.isBlurredFor = function(username) {
+		return (blurredBy.length > 0) && !blurredBy.includes(username);
 	}
 }
 

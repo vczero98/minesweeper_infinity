@@ -14,7 +14,7 @@ window.onload = function() {
 	var chatHandler = new ChatHandler();
 	var socketHandler = new SocketHandler(chatHandler, socket, playersManager, board);
 
-	EventListeners.addEventListeners(board, socketHandler);
+	EventListeners.addEventListeners(board, socketHandler, playersManager);
 
 	var resizeTimer;
 	$(window).resize(function () {

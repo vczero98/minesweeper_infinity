@@ -3,6 +3,7 @@ function Board(height, width, playersManager) {
 	var playerMe = playerMe;
 	var ctx;
 	var blocks = new Blocks();
+	var socketHandler = undefined;
 	this.oldHoveringBlock = undefined;
 	this.newHoveringBlock = undefined;
 	this.selectedItem = undefined;
@@ -75,6 +76,12 @@ function Board(height, width, playersManager) {
 					img = images.flag_yellow
 					break;
 			}
+		} else if (block.radar !== undefined) {
+			if (block.radar) {
+				img = images.radar1;
+			} else {
+				img = images.radar0;
+			}
 		} else {
 			img = images.unexpanded;
 		}
@@ -95,51 +102,53 @@ function Board(height, width, playersManager) {
 				drawBlock(i - self.offsetX, j - self.offsetY);
 			}
 		}
-		// var str1 = (0 - self.offsetX) + ", " + (0 - self.offsetY);
-		// var str2 = (Math.floor(self.width / self.blockSize) - self.offsetX) + ", " + (Math.floor(self.height / self.blockSize) - self.offsetY);
-		// console.log(str1 + " => " + str2);
 	}
 
 	function clickBlock(x, y) {
-		var block = blocks.getBlock(x, y);
-		if (block.isUndefinedBlock) {
-			block = new Block();
-		}
-
-		if (!block.expanded) {
-			// Check that the block is not flagged
-			if (block.flagColor === "") {
-				block.expanded = true;
-				blocks.setBlock(x, y, block);
-				drawBlock(x, y);
-				return [{x: x, y: y}];
-			} else {
-				return [];
-			}
+		if (self.selectedItem !== undefined) {
+			socketHandler.useItem(self.selectedItem.id, x, y);
+			deselectItem();
+			return [];
 		} else {
-			// If the block is already expanded
-			var neighbors = blocks.getNeighbors(x, y);
-
-			// Check if all mines around have been flagged
-			var nFlagged = 0;
-			for (var i = 0; i < neighbors.length; i++) {
-				var neighbor = blocks.getBlock(neighbors[i].x, neighbors[i].y);
-				if (!neighbor.isUndefinedBlock && neighbor.flagColor !== "")
-					nFlagged++;
+			var block = blocks.getBlock(x, y);
+			if (block.isUndefinedBlock) {
+				block = new Block();
 			}
-			if (block.n !== nFlagged)
-				return [];
 
-			// All neighbors can be expanded, return neighbors to expand
-			var toExpand = [];
-			for (var i = 0; i < neighbors.length; i++) {
-				var neighbor = blocks.getBlock(neighbors[i].x, neighbors[i].y);
-				if (neighbor.isUndefinedBlock || (!neighbor.expanded && neighbor.flagColor === ""))
-					toExpand.push({x: neighbors[i].x, y: neighbors[i].y});
+			if (!block.expanded) {
+				// Check that the block is not flagged
+				if (block.flagColor === "") {
+					block.expanded = true;
+					blocks.setBlock(x, y, block);
+					drawBlock(x, y);
+					return [{x: x, y: y}];
+				} else {
+					return [];
+				}
+			} else {
+				// If the block is already expanded
+				var neighbors = blocks.getNeighbors(x, y);
+
+				// Check if all mines around have been flagged
+				var nFlagged = 0;
+				for (var i = 0; i < neighbors.length; i++) {
+					var neighbor = blocks.getBlock(neighbors[i].x, neighbors[i].y);
+					if (!neighbor.isUndefinedBlock && neighbor.flagColor !== "")
+						nFlagged++;
+				}
+				if (block.n !== nFlagged)
+					return [];
+
+				// All neighbors can be expanded, return neighbors to expand
+				var toExpand = [];
+				for (var i = 0; i < neighbors.length; i++) {
+					var neighbor = blocks.getBlock(neighbors[i].x, neighbors[i].y);
+					if (neighbor.isUndefinedBlock || (!neighbor.expanded && neighbor.flagColor === ""))
+						toExpand.push({x: neighbors[i].x, y: neighbors[i].y});
+				}
+				return toExpand;
 			}
-			return toExpand;
 		}
-
 	}
 
 	function flagBlock(x, y, username) {
@@ -215,8 +224,22 @@ function Board(height, width, playersManager) {
 	function updateWorld(updates) {
 		for (var i = 0; i < updates.length; i++) {
 			var update = updates[i];
+			update.block.isUndefinedBlock = false;
 			blocks.setBlock(update.x, update.y, update.block);
 			drawBlock(update.x, update.y);
+		}
+	}
+
+	function giveRadarInfo(radarRange) {
+		for (var i = 0; i < radarRange.length; i++) {
+			var radarInfo = radarRange[i];
+			var block = blocks.getBlock(radarInfo.x, radarInfo.y);
+			if (block.isUndefinedBlock) {
+				block = new Block();
+			}
+			block.radar = radarInfo.r;
+			console.log(block.radar);
+			drawBlock(radarInfo.x, radarInfo.y);
 		}
 	}
 
@@ -247,6 +270,25 @@ function Board(height, width, playersManager) {
 		}
 	}
 
+	function selectItem(item) {
+		if (self.selectedItem === item) {
+			deselectItem();
+		} else {
+			self.selectedItem = item;
+		}
+	}
+
+	function deselectItem() {
+		self.selectedItem = undefined;
+		self.oldHoveringBlock = self.newHoveringBlock;
+		self.newHoveringBlock = undefined;
+		self.hoveringBlockUpdated();
+	}
+
+	function useSocketHandler(newSocketHandler) {
+		socketHandler = newSocketHandler;
+	}
+
 	this.clickBlock = clickBlock;
 	this.drawBoard = drawBoard;
 	this.drawBlock = drawBlock;
@@ -257,4 +299,7 @@ function Board(height, width, playersManager) {
 	this.resizeBoard = resizeBoard;
 	this.updateWorld = updateWorld;
 	this.hoveringBlockUpdated = hoveringBlockUpdated;
+	this.selectItem = selectItem;
+	this.useSocketHandler = useSocketHandler;
+	this.giveRadarInfo = giveRadarInfo;
 }

@@ -1,4 +1,5 @@
-var Block = require("./block");
+var Block = require('./block');
+var ItemHandler = require('./items/itemhandler');
 
 module.exports = function(io, roomsHandler) {
 	io.on('connection', function (socket) {
@@ -25,7 +26,7 @@ module.exports = function(io, roomsHandler) {
 				socket.join(roomid);
 				username = getName();
 
-				player = {username: username,  color: room.availableColors.pop(), nFlags: 0, nExpanded: 0};
+				player = {username: username,  color: room.availableColors.pop(), nFlags: 0, nExpanded: 0, id: socket.id};
 				socket.emit('all-players', {players: room.players, me: player, maxPlayers: room.maxPlayers});
 				socket.emit('board-state', room.blocks.getBlocksState())
 				room.players.push(player);
@@ -107,7 +108,22 @@ module.exports = function(io, roomsHandler) {
 				player.nExpanded++;
 				io.to(roomid).emit('block-expanded', {username: player.username, n: player.nExpanded});
 			}
-			io.to(roomid).emit('update-world', {updates: updates});
+			io.to(roomid).emit('update-world', {updates: room.convertBlocksToSendable(updates, player.username)});
+		});
+
+		// TODO: Remove
+		var hasUsedRadar = false;
+		socket.on('use-item', function(data) {
+
+			var item = ItemHandler.getItem(data.id);
+			if (data.id === 0 && !hasUsedRadar) {
+				// hasUsedRadar = true;
+				item.useItem(room, {x: data.x, y: data.y}, player.username, socket);
+			} else if (data.id !== 0) {
+				item.useItem(room, {x: data.x, y: data.y}, player.username, socket);
+			} else {
+				socket.emit('server-message', "Már használtad");
+			}
 		});
 
 		function getName() {

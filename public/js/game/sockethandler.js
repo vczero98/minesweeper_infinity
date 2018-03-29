@@ -2,6 +2,7 @@ function SocketHandler(chatHandler, socket, playersManager, board) {
 	// this.socket = io();
 	// this.chatHandler = chatHandler;
 	var self = this;
+	board.useSocketHandler(self);
 
 	socket.on('new-player', function (player) {
 		chatHandler.addServerMessage(player.username + " has joined the room.");
@@ -63,6 +64,10 @@ function SocketHandler(chatHandler, socket, playersManager, board) {
 		board.updateWorld(data.updates);
 	});
 
+	socket.on('item-radar', function (data) {
+		board.giveRadarInfo(data.radarRange);
+	});
+
 	socket.on('disconnect', function (data) {
 		window.location.href = "/rooms";
 	});
@@ -82,6 +87,11 @@ function SocketHandler(chatHandler, socket, playersManager, board) {
 		socket.emit("expand-block", {x: x, y: y});
 	}
 
-	SocketHandler.prototype.flagBlock = flagBlock;
-	SocketHandler.prototype.expandBlock = expandBlock;
+	function useItem(id, x, y) {
+		socket.emit("use-item", {id: id, x: x, y: y});
+	}
+
+	this.flagBlock = flagBlock;
+	this.expandBlock = expandBlock;
+	this.useItem = useItem;
 }

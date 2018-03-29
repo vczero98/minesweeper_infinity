@@ -156,10 +156,39 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 		return updates;
 	}
 
+	function convertBlockToSendable(block, username) {
+		var sendableBlock = Object.assign({}, block); // Clone the block
+		if (sendableBlock.isBlurredFor(username) && sendableBlock.n > 0 && sendableBlock.n <= 8) {
+			sendableBlock.n = 9;
+		}
+
+		delete sendableBlock.isUndefinedBlock;
+
+		// Delete functions, as they should not be sent over the network
+		for (var property in sendableBlock) {
+			if (sendableBlock.hasOwnProperty(property)) {
+				if (typeof sendableBlock[property] === "function") {
+					delete sendableBlock[property];
+				}
+			}
+		}
+		return sendableBlock;
+	}
+
+	function convertBlocksToSendable(blocks, username) {
+		// Relies on x, y, block format
+		var sendableBlocks = [];
+		for (var i = 0; i < blocks.length; i++)
+			sendableBlocks.push({x: blocks[i].x, y: blocks[i].y, block: convertBlockToSendable(blocks[i].block, username)});
+		return sendableBlocks;
+	}
+
 	this.startGame = startGame;
 	this.getNumPlayers = getNumPlayers;
 	this.isFull = isFull;
 	this.expandBlock = expandBlock;
+	this.convertBlockToSendable = convertBlockToSendable;
+	this.convertBlocksToSendable = convertBlocksToSendable;
 }
 
 module.exports = Room;

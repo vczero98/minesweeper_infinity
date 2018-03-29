@@ -27,9 +27,21 @@ function Images() {
 	this.mine_yellow = new Image();
 	this.mine_yellow.src = location + "mine_yellow.png";
 
+	this.radar0 = new Image();
+	this.radar0.src = location + "radar0.png";
+
+	this.radar1 = new Image();
+	this.radar1.src = location + "radar1.png";
+
+	this.blurred = new Image();
+	this.blurred.src = location + "blurred.png";
+
 	this.n = [];
 	for (var i = 0; i < 9; i++) {
 		this.n[i] = new Image();
 		this.n[i].src = location + i + ".png";
 	}
+
+	this.n[9] = new Image();
+	this.n[9].src = location + "blurred.png";
 }

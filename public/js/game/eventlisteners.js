@@ -1,6 +1,6 @@
 function EventListeners() { }
 
-EventListeners.addEventListeners = function(board, socketHandler) {
+EventListeners.addEventListeners = function(board, socketHandler, playersManager) {
 	// board.drawBlock(1,1,false);
 	board.getCanvas().addEventListener("mouseup", function(evt){
 		// Get the position of the click
@@ -40,32 +40,22 @@ EventListeners.addEventListeners = function(board, socketHandler) {
 			const key_a = 65;
 			const key_s = 83;
 			const key_d = 68;
+			const key_up = 38;
+			const key_down = 40;
+			const key_left = 37;
+			const key_right = 39;
 			const key_esc = 27;
 
 			var key = evt.keyCode ? evt.keyCode : evt.which;
-			console.log(key);
 			var offsetBy = 4;
-			switch(key) {
-				case key_w:
-					board.offsetY += offsetBy;
-					break;
-				case key_s:
-					board.offsetY -= offsetBy;
-					break;
-				case key_a:
-					board.offsetX += offsetBy;
-					break;
-				case key_d:
-					board.offsetX -= offsetBy;
-					break;
-				case key_esc:
-					// Cancel the selected item
-					selectItem(board.selectedItem);
-					break;
-			}
+			if (key == key_w || key == key_up) board.offsetY += offsetBy;
+			if (key == key_s || key == key_down) board.offsetY -= offsetBy;
+			if (key == key_a || key == key_left) board.offsetX += offsetBy;
+			if (key == key_d || key == key_right) board.offsetX -= offsetBy;
 
-			if (key == key_w || key == key_a || key == key_s || key == key_d) {
+			if (key == key_w || key == key_a || key == key_s || key == key_d || key == key_up || key == key_down || key == key_left || key_right) {
 				board.drawBoard();
+				board.getCanvas().dispatchEvent(new Event('mousemove'));
 			}
 		}
 		window.addEventListener('keyup', function() {
@@ -94,33 +84,24 @@ EventListeners.addEventListeners = function(board, socketHandler) {
 	});
 
 	$("#item-radar").click(function() {
-		selectItem(Items.RADAR);
+		board.selectItem(Items.RADAR);
 	});
 
 	$("#item-freeze").click(function() {
-		selectItem(Items.FREEZE);
+		board.selectItem(Items.FREEZE);
 	});
 
 	$("#item-weightless-shoes").click(function() {
-		selectItem(Items.WEIGHTLESS_SHOES);
+		board.selectItem(Items.WEIGHTLESS_SHOES);
 	});
 
 	$("#item-blurred-vision").click(function() {
-		selectItem(Items.BLURRED_VISION);
+		board.selectItem(Items.BLURRED_VISION);
 	});
 
 	$("#item-lucky-moves").click(function() {
-		selectItem(Items.LUCKY_MOVES);
+		board.selectItem(Items.LUCKY_MOVES);
 	});
 
-	function selectItem(item) {
-		if (board.selectedItem === item) {
-			board.selectedItem = undefined;
-			board.oldHoveringBlock = board.newHoveringBlock;
-			board.newHoveringBlock = undefined;
-			board.hoveringBlockUpdated();
-		} else {
-			board.selectedItem = item;
-		}
-	}
+
 };
