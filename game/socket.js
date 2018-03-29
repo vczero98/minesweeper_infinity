@@ -94,6 +94,8 @@ module.exports = function(io, roomsHandler) {
 					socket.broadcast.to(roomid).emit('flag-block', {username: player.username, x: data.x, y: data.y});
 					block.flagColor = player.color;
 					block.flagOwner = player.username;
+					console.log("block flagged");
+					room.blocks.setBlock(data.x, data.y, block);
 				}
 			}
 		});
@@ -111,19 +113,9 @@ module.exports = function(io, roomsHandler) {
 			io.to(roomid).emit('update-world', {updates: room.convertBlocksToSendable(updates, player.username)});
 		});
 
-		// TODO: Remove
-		var hasUsedRadar = false;
 		socket.on('use-item', function(data) {
-
 			var item = ItemHandler.getItem(data.id);
-			if (data.id === 0 && !hasUsedRadar) {
-				// hasUsedRadar = true;
-				item.useItem(room, {x: data.x, y: data.y}, player.username, socket);
-			} else if (data.id !== 0) {
-				item.useItem(room, {x: data.x, y: data.y}, player.username, socket);
-			} else {
-				socket.emit('server-message', "Már használtad");
-			}
+			item.useItem(room, {x: data.x, y: data.y}, player.username, socket);
 		});
 
 		function getName() {

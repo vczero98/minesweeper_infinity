@@ -154,6 +154,7 @@ function Board(height, width, playersManager) {
 	function flagBlock(x, y, username) {
 		var player = playersManager.getPlayerByUsername(username);
 		var block = blocks.getBlock(x, y);
+		console.log("undefined block: " + block.isUndefinedBlock);
 		if (block.isUndefinedBlock) {
 			block = new Block();
 			blocks.setBlock(x, y, block);
@@ -162,6 +163,8 @@ function Board(height, width, playersManager) {
 			// Add the block flag
 			block.flagColor = player.color;
 			block.flagOwner = username;
+			blocks.setBlock(x, y, block);
+			console.log(block);
 			drawBlock(x, y);
 			playersManager.getTableHandler().incrementFlags(username);
 			return true;

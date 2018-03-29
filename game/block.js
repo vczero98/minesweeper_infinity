@@ -7,6 +7,7 @@ function Block() {
 	this.exploadedMine = "";
 	var isProtected = false;
 	var mine = false;
+	var radarBy = [];
 	var blurredBy = [];
 
 	this.protect = function() {
@@ -34,6 +35,15 @@ function Block() {
 
 	this.isBlurredFor = function(username) {
 		return (blurredBy.length > 0) && !blurredBy.includes(username);
+	}
+
+	this.useRadar = function(username) {
+		if (!radarBy.includes(username))
+			radarBy.push(username);
+	}
+
+	this.hasUsedRadar = function(username) {
+		return radarBy.includes(username);
 	}
 }
 

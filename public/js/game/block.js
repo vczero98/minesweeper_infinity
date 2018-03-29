@@ -17,6 +17,7 @@ function Block() {
 	this.isUndefinedBlock = false;
 	this.expanded = false;
 	this.flagColor = "";
+	this.flagOwner = "";
 	this.n = 0;
-	this.exploadedMine = false;
+	this.exploadedMine = "";
 }

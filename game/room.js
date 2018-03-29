@@ -162,6 +162,9 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 			sendableBlock.n = 9;
 		}
 
+		if (sendableBlock.hasUsedRadar(username))
+			sendableBlock.radar = sendableBlock.isMine();
+
 		delete sendableBlock.isUndefinedBlock;
 
 		// Delete functions, as they should not be sent over the network
