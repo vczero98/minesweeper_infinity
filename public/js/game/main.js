@@ -1,8 +1,4 @@
 window.onload = function() {
-	// board = new Board(30, 50, 150);
-	// board = new Board(14*24, 22*24, 99);
-	// board = new Board(20*24, 33*24, 99); //medium
-	// board = new Board(27*24, 45*24, 99); //large
 	var self = this;
 	var cHeight = document.documentElement.clientHeight - 50;
 	var cWidth = document.documentElement.clientWidth - 320;

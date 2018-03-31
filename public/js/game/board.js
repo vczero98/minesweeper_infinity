@@ -1,201 +1,308 @@
-class Board {
-	constructor(height, width, numMines) {
-		this.height = height;
-		this.width = width;
-		this.blockSize = 24;
-		this.numMines = Math.min(numMines, (height * width - 1));
-		this.numMinesLeft = this.numMines;
-		this.blocks = new Blocks();
-		this.drawBoard();
-		this.updateMineDisplay();
-		this.gameStarted = false;
-		this.gameOver = false;
-		this.elapsedTime = 0;
-		this.timer;
-		this.offsetX = 0;
-		this.offsetY = 0;
-		this.moveLeft = false;
-		this.moveRight = false;
-		this.moveUp = false;
-		this.moveDown = false;
+function Board(height, width, playersManager) {
+	var self = this;
+	var playerMe = playerMe;
+	var ctx;
+	var blocks = new Blocks();
+	var socketHandler = undefined;
+	this.oldHoveringBlock = undefined;
+	this.newHoveringBlock = undefined;
+	this.selectedItem = undefined;
+	this.oldSelectedSize = 0;
 
-		for (var x = -100; x <= 100; x++) {
-			for (var y = -100; y <= 100; y++) {
-				var b = new Block();
-				this.blocks.setBlock(x, y, b);
+	this.blockSize = 24;
+	var height = height;
+	var width = width;
+
+	var canvas;
+
+	this.offsetX = 0;
+	this.offsetY = 0;
+	// var img = new Image();
+	// img.src = "/images/game/0.png";
+	var images = new Images();
+
+	createBoard();
+	drawBoard();
+
+	function drawBlock(x, y) {
+		var block = blocks.getBlock(x, y); // Get the from indices
+
+		var img;
+		var newSrc = "";
+
+		// if (block.expanded) {
+		// 	if (block.isMine) {
+		// 		img.src += "mine.png";
+		// 	} else {
+		// 		img.src += block.n + ".png";
+		// 	}
+		// } else {
+		// 	if (block.flagged) {
+		// 		img.src += "red_flag.png";
+		// 	} else {
+		// 		img.src += "unexpanded.png";
+		// 	}
+		if (block.isUndefinedBlock) {
+			img = images.unexpanded;
+		} else if (block.exploadedMine !== "") {
+			switch (block.exploadedMine) {
+				case "red":
+					img = images.mine_red
+					break;
+				case "green":
+					img = images.mine_green
+					break;
+				case "purple":
+					img = images.mine_purple
+					break;
+				case "yellow":
+					img = images.mine_yellow
+					break;
 			}
-		}
-
-		// Disable context menu at right click
-		this.canvas.oncontextmenu = function() {
-			return false;
-		}
-	}
-
-	drawBoard() {
-		this.canvas = document.createElement("canvas");
-		this.canvas.height = this.height;
-		this.canvas.width = this.width;
-		// document.getElementById("head").style.width = this.canvas.width + "px"; // Set the width of the head
-		this.ctx = this.canvas.getContext("2d");
-		document.getElementById("game").appendChild(this.canvas);
-	}
-
-	drawBlock(x, y) {
-		var block = this.blocks.getBlock(x, y); // Get the from indices
-		// Create canvas and ctx
-		var blockCanvas = document.createElement("canvas");
-		var blockCtx = blockCanvas.getContext("2d");
-
-		var img = new Image();
-		img.src = "/images/game/";
-		console.log(blockCanvas.toDataURL());
-
-		if (block.expanded) {
-			if (block.isMine) {
-				img.src += "mine.png";
+		}	else if (block.expanded) {
+			img = images.n[block.n];
+		} else if (!(block.flagColor === "")) {
+			switch (block.flagColor) {
+				case "red":
+					img = images.flag_red
+					break;
+				case "green":
+					img = images.flag_green
+					break;
+				case "purple":
+					img = images.flag_purple
+					break;
+				case "yellow":
+					img = images.flag_yellow
+					break;
+			}
+		} else if (block.radar !== undefined) {
+			if (block.radar) {
+				img = images.radar1;
 			} else {
-				img.src += block.n + ".png";
+				img = images.radar0;
 			}
 		} else {
-			if (block.flagged) {
-				img.src += "red_flag.png";
-			} else {
-				img.src += "unexpanded.png";
-			}
+			img = images.unexpanded;
 		}
 
-		//img.src = blockCanvas.toDataURL();
-		blockCtx.drawImage(img, x * this.blockSize - this.offsetX, y * this.blockSize - this.offsetY);
+		if (img) {
+			ctx.drawImage(img, (x + self.offsetX) * self.blockSize, (y + self.offsetY) * self.blockSize);
+		}
+		if (block.hovering && self.selectedItem) {
+			ctx.fillStyle = self.selectedItem.fillColor;
+			ctx.fillRect((x + self.offsetX) * self.blockSize, (y + self.offsetY) * self.blockSize, self.blockSize, self.blockSize);
+			// ctx.strokeRect((x + self.offsetX) * self.blockSize + 1, (y + self.offsetY) * self.blockSize + 1, self.blockSize - 2, self.blockSize - 2);
+		}
 	}
 
-	redrawBoard() {
-		var firstBlockX = Math.floor(this.offsetX / this.blockSize);
-		var firstBlockY = Math.floor(this.offsetY / this.blockSize);
-
-		var lastBlockX = firstBlockX + Math.floor(this.width / this.blockSize);
-		var lastBlockY = firstBlockY + Math.floor(this.height / this.blockSize);
-
-		for (var i = firstBlockX; i <= lastBlockX; i++) {
-			for (var j = firstBlockY; j <= lastBlockY; j++) {
-				this.drawBlock(i, j);
+	function drawBoard() {
+		for (var i = 0; i < (Math.floor(width / self.blockSize) + 1); i++) {
+			for (var j = 0; j < (Math.floor(height / self.blockSize) + 1); j++) {
+				drawBlock(i - self.offsetX, j - self.offsetY);
 			}
 		}
 	}
 
-	expandBlock(x, y) {
-		// Returns true if the block can be expanded
-		var block = this.blocks.getBlock(x, y);
-		if (block.expanded || block.flagged) {
-			return false;
-		}
-		block.expanded = true;
-		this.drawBlock(x, y);
-		if (block.n == 0 && !block.isMine) {
-			var neighbours = this.getNeighboursOfBlock(x, y);
-			for (var i = 0; i < neighbours.length; i++) {
-				this.expandBlock(neighbours[i][0], neighbours[i][1]);
-			}
-		}
-		return true;
-	}
-
-	flagBlock(x, y) {
-		var block = this.blocks.getBlock(x, y);
-		if (block.expanded) {
-			return;
-		}
-		if (block.flagged) {
-			this.numMinesLeft++;
+	function clickBlock(x, y) {
+		if (self.selectedItem !== undefined) {
+			socketHandler.useItem(self.selectedItem.id, x, y);
+			deselectItem();
+			return [];
 		} else {
-			this.numMinesLeft--;
-		}
-		block.flagged = !block.flagged;
-		this.drawBlock(x, y);
-		this.updateMineDisplay();
-	}
+			var block = blocks.getBlock(x, y);
+			if (block.isUndefinedBlock) {
+				block = new Block();
+			}
 
-	generateMines() {
-		var minesLeft = this.numMines;
-		while (minesLeft != 0) {
-			var xPos = Math.trunc(Math.random() * Math.floor(this.width/this.blockSize)); // Generate a number from 0 to the upper bound (exclusive)
-			var yPos = Math.trunc(Math.random() * Math.floor(this.height/this.blockSize));
-			var block = this.blocks.getBlock(xPos, yPos);
-			// Check if the block is not a mine already or not protected
-			if (!block.isMine && !block.protected) {
-				// Set the block to be a mine
-				block.isMine = true;
-				this.drawBlock(xPos, yPos);
-				// Increase the number of the neighbours of the mine
-				var neighbours = this.getNeighboursOfBlock(xPos, yPos);
-				for (var i = 0; i < neighbours.length; i++) {
-					this.blocks.getBlock(neighbours[i][0],neighbours[i][1]).incrementN();
+			if (!block.expanded) {
+				// Check that the block is not flagged
+				if (block.flagColor === "") {
+					block.expanded = true;
+					blocks.setBlock(x, y, block);
+					drawBlock(x, y);
+					return [{x: x, y: y}];
+				} else {
+					return [];
 				}
-				minesLeft--;
+			} else {
+				// If the block is already expanded
+				var neighbors = blocks.getNeighbors(x, y);
+
+				// Check if all mines around have been flagged
+				var nFlagged = 0;
+				for (var i = 0; i < neighbors.length; i++) {
+					var neighbor = blocks.getBlock(neighbors[i].x, neighbors[i].y);
+					if (!neighbor.isUndefinedBlock && neighbor.flagColor !== "")
+						nFlagged++;
+				}
+				if (block.n !== nFlagged)
+					return [];
+
+				// All neighbors can be expanded, return neighbors to expand
+				var toExpand = [];
+				for (var i = 0; i < neighbors.length; i++) {
+					var neighbor = blocks.getBlock(neighbors[i].x, neighbors[i].y);
+					if (neighbor.isUndefinedBlock || (!neighbor.expanded && neighbor.flagColor === ""))
+						toExpand.push({x: neighbors[i].x, y: neighbors[i].y});
+				}
+				return toExpand;
 			}
 		}
 	}
 
-	clickBlock(x, y) {
-		// Returns false if the game is over, true otherwise
-		if (this.gameOver) {
+	function flagBlock(x, y, username) {
+		var player = playersManager.getPlayerByUsername(username);
+		var block = blocks.getBlock(x, y);
+		console.log("undefined block: " + block.isUndefinedBlock);
+		if (block.isUndefinedBlock) {
+			block = new Block();
+			blocks.setBlock(x, y, block);
+		}
+		if (block.flagColor === "") {
+			// Add the block flag
+			block.flagColor = player.color;
+			block.flagOwner = username;
+			blocks.setBlock(x, y, block);
+			console.log(block);
+			drawBlock(x, y);
+			playersManager.getTableHandler().incrementFlags(username);
+			return true;
+		} else if (block.flagOwner === playersManager.getMe().username) {
+			// Remove the block flag
+			removeFlag(x, y, playersManager.getMe().username);
 			return true;
 		}
-		if (this.expandBlock(x, y)) {
-			if (this.blocks.getBlock(x,y).isMine) {
-				this.blocks.getBlock(x,y).losingBlock = true;
-				this.endGame();
-				return false;
-			}
-		}
-		return true;
-	}
-
-	startGame() {
-		this.gameStarted = true;
-		// document.getElementById("displayTime").innerText = 0;
-		this.timer = setInterval(this.updateTimeDisplay, 1000);
-	}
-
-	endGame() {
-		this.gameOver = true;
-		clearInterval(this.timer);
-		for (var i = 0; i < Math.floor(this.width/this.blockSize); i++) {
-			for (var j = 0; j < Math.floor(this.height/this.blockSize); j++) {
-				var block = this.blocks.getBlock(i, j);
-				if (block.isMine) {
-					block.expanded = true;
-					this.drawBlock(i, j);
-				} else if (!block.isMine && block.flagged) {
-					this.drawBlock(i, j);
-				}
-			}
-		}
-	}
-
-	getNeighboursOfBlock(x, y) {
-		var neighbours = [];
-		for (var i = (x - 1); i <= (x + 1); i++) {
-			for (var j = (y - 1); j <= (y + 1); j++) {
-				if (!(i == x && j == y) && !this.isOutOfRange(i, j)) {
-					neighbours.push([i, j]);
-				}
-			}
-		}
-		return neighbours;
-	}
-
-	isOutOfRange(x, y) {
-		// return ((Math.min(x, y) < 0) || (x > (this.width - 1)) || (y > (this.height - 1)));
 		return false;
 	}
 
-	updateMineDisplay() {
-		// document.getElementById("displayMinesLeft").innerText = Math.max(this.numMinesLeft, 0);
+	function removeFlag(x, y, username) {
+		playersManager.getTableHandler().decrementFlags(username);
+		var block = blocks.getBlock(x, y);
+		block.flagColor = "";
+		drawBlock(x, y);
 	}
 
-	updateTimeDisplay() {
-		// board.elapsedTime++;
-		// document.getElementById("displayTime").innerText = board.elapsedTime;
+	function createBoard() {
+		canvas = document.createElement("canvas");
+		canvas.height = height;
+		canvas.width = width;
+		ctx = canvas.getContext("2d");
+		ctx = ctx;
+		document.getElementById("game").appendChild(canvas);
+		// drawBoard(false);
+		// Disable context menu at right click
+		canvas.oncontextmenu = function() {
+			return false;
+		}
+		self.offsetX = Math.floor((width/self.blockSize)/2) - 20
+		self.offsetY = Math.floor((height/self.blockSize)/2) - 12
 	}
+
+// 	drawBoard() {
+// 	this.canvas = document.createElement("canvas");
+// 	this.canvas.height = this.height * 24;
+// 	this.canvas.width = this.width * 24;
+// 	document.getElementById("head").style.width = this.canvas.width + "px"; // Set the width of the head
+// 	this.ctx = this.canvas.getContext("2d");
+// 	document.getElementById("game").appendChild(this.canvas);
+// }
+
+	function getCanvas() {
+		return canvas;
+	}
+
+	function getBlocks() {
+		return blocks;
+	}
+
+	function resizeBoard(newHeight, newWidth) {
+		height = newHeight;
+		width = newWidth;
+		canvas.height = height;
+		canvas.width = width;
+		drawBoard();
+	}
+
+	function updateWorld(updates) {
+		for (var i = 0; i < updates.length; i++) {
+			var update = updates[i];
+			update.block.isUndefinedBlock = false;
+			blocks.setBlock(update.x, update.y, update.block);
+			drawBlock(update.x, update.y);
+		}
+	}
+
+	function giveRadarInfo(radarRange) {
+		for (var i = 0; i < radarRange.length; i++) {
+			var radarInfo = radarRange[i];
+			var block = blocks.getBlock(radarInfo.x, radarInfo.y);
+			if (block.isUndefinedBlock) {
+				block = new Block();
+			}
+			block.radar = radarInfo.r;
+			console.log(block.radar);
+			drawBlock(radarInfo.x, radarInfo.y);
+		}
+	}
+
+	function hoveringBlockUpdated() {
+		var oBlock = self.oldHoveringBlock;
+		var nBlock = self.newHoveringBlock;
+		// const mid = 0;
+		if (oBlock) {
+			const oldMid = Math.floor((self.oldSelectedSize - 0.5) / 2);
+			for (var i = 0; i < self.oldSelectedSize; i++) {
+				for (var j = 0; j < self.oldSelectedSize; j++) {
+					blocks.getBlock(oBlock.x + i - oldMid, oBlock.y + j - oldMid).hovering = undefined;
+					drawBlock(oBlock.x + i - oldMid, oBlock.y + j - oldMid);
+				}
+			}
+		}
+		if (nBlock) {
+			const size = self.selectedItem.range;
+			const mid = Math.floor((size - 0.5) / 2);
+			for (var i = 0; i < size; i++) {
+				for (var j = 0; j < size; j++) {
+					blocks.getBlock(nBlock.x + i - mid, nBlock.y + j - mid).hovering = true;
+					drawBlock(nBlock.x + i - mid, nBlock.y + j - mid);
+				}
+			}
+			ctx.strokeRect((nBlock.x + self.offsetX - mid) * self.blockSize + 1, (nBlock.y + self.offsetY - mid) * self.blockSize + 1, self.blockSize * size - 2, self.blockSize * size - 2);
+			self.oldSelectedSize = size;
+		}
+	}
+
+	function selectItem(item) {
+		if (self.selectedItem === item) {
+			deselectItem();
+		} else {
+			self.selectedItem = item;
+		}
+	}
+
+	function deselectItem() {
+		self.selectedItem = undefined;
+		self.oldHoveringBlock = self.newHoveringBlock;
+		self.newHoveringBlock = undefined;
+		self.hoveringBlockUpdated();
+	}
+
+	function useSocketHandler(newSocketHandler) {
+		socketHandler = newSocketHandler;
+	}
+
+	this.clickBlock = clickBlock;
+	this.drawBoard = drawBoard;
+	this.drawBlock = drawBlock;
+	this.flagBlock = flagBlock;
+	this.removeFlag = removeFlag;
+	this.getCanvas = getCanvas;
+	this.getBlocks = getBlocks;
+	this.resizeBoard = resizeBoard;
+	this.updateWorld = updateWorld;
+	this.hoveringBlockUpdated = hoveringBlockUpdated;
+	this.selectItem = selectItem;
+	this.useSocketHandler = useSocketHandler;
+	this.giveRadarInfo = giveRadarInfo;
 }
