@@ -8,6 +8,7 @@ function Board(playersManager) {
 	var renderer = renderer;
 	this.oldHoveringBlock = undefined;
 	this.newHoveringBlock = undefined;
+	var hoveringRect = undefined;
 	this.selectedItem = undefined;
 	this.oldSelectedSize = 0;
 
@@ -122,6 +123,8 @@ function Board(playersManager) {
 		// const mid = 0;
 		if (oBlock) {
 			const oldMid = Math.floor((self.oldSelectedSize - 0.5) / 2);
+			if (hoveringRect !== undefined)
+				renderer.removeRectangle(hoveringRect);
 			for (var i = 0; i < self.oldSelectedSize; i++) {
 				for (var j = 0; j < self.oldSelectedSize; j++) {
 					blocks.getBlock(oBlock.x + i - oldMid, oBlock.y + j - oldMid).hovering = undefined;
@@ -132,13 +135,14 @@ function Board(playersManager) {
 		if (nBlock) {
 			const size = self.selectedItem.range;
 			const mid = Math.floor((size - 0.5) / 2);
+			hoveringRect = renderer.addRectangle(nBlock.x - mid, nBlock.y - mid, size, size, self.selectItem.borderColor);
 			for (var i = 0; i < size; i++) {
 				for (var j = 0; j < size; j++) {
 					blocks.getBlock(nBlock.x + i - mid, nBlock.y + j - mid).hovering = true;
 					renderer.drawBlock(nBlock.x + i - mid, nBlock.y + j - mid);
 				}
 			}
-			renderer.getCtx().strokeRect((nBlock.x + renderer.offsetX - mid) * renderer.blockSize + 1, (nBlock.y + renderer.offsetY - mid) * renderer.blockSize + 1, renderer.blockSize * size - 2, renderer.blockSize * size - 2);
+			// renderer.getCtx().strokeRect((nBlock.x + renderer.offsetX - mid) * renderer.blockSize + 1, (nBlock.y + renderer.offsetY - mid) * renderer.blockSize + 1, renderer.blockSize * size - 2, renderer.blockSize * size - 2);
 			self.oldSelectedSize = size;
 		}
 	}
@@ -152,6 +156,8 @@ function Board(playersManager) {
 	}
 
 	function deselectItem() {
+		if (self.selectedItem.leavesRect)
+			hoveringRect = undefined;
 		self.selectedItem = undefined;
 		self.oldHoveringBlock = self.newHoveringBlock;
 		self.newHoveringBlock = undefined;

@@ -13,7 +13,7 @@ function Renderer(height, width, board) {
 	this.offsetY = 0;
 
 	var rectangles = [];
-	var rectangleId = 0;
+	var rectangleIdCounter = 0;
 
 	var height = height;
 	var width = width;
@@ -23,6 +23,9 @@ function Renderer(height, width, board) {
 
 		var img;
 		var newSrc = "";
+
+		const xPixelPos = (x + self.offsetX) * self.blockSize;
+		const yPixelPos = (y + self.offsetY) * self.blockSize;
 
 		// if (block.expanded) {
 		// 	if (block.isMine) {
@@ -41,16 +44,16 @@ function Renderer(height, width, board) {
 		} else if (block.exploadedMine !== "") {
 			switch (block.exploadedMine) {
 				case "red":
-					img = images.mine_red
+					img = images.mine_red;
 					break;
 				case "green":
-					img = images.mine_green
+					img = images.mine_green;
 					break;
 				case "purple":
-					img = images.mine_purple
+					img = images.mine_purple;
 					break;
 				case "yellow":
-					img = images.mine_yellow
+					img = images.mine_yellow;
 					break;
 			}
 		}	else if (block.expanded) {
@@ -58,16 +61,16 @@ function Renderer(height, width, board) {
 		} else if (!(block.flagColor === "")) {
 			switch (block.flagColor) {
 				case "red":
-					img = images.flag_red
+					img = images.flag_red;
 					break;
 				case "green":
-					img = images.flag_green
+					img = images.flag_green;
 					break;
 				case "purple":
-					img = images.flag_purple
+					img = images.flag_purple;
 					break;
 				case "yellow":
-					img = images.flag_yellow
+					img = images.flag_yellow;
 					break;
 			}
 		} else if (block.radar !== undefined) {
@@ -88,6 +91,53 @@ function Renderer(height, width, board) {
 			ctx.fillRect((x + self.offsetX) * self.blockSize, (y + self.offsetY) * self.blockSize, self.blockSize, self.blockSize);
 			// ctx.strokeRect((x + self.offsetX) * self.blockSize + 1, (y + self.offsetY) * self.blockSize + 1, self.blockSize - 2, self.blockSize - 2);
 		}
+
+		// TODO: Block redrawn when expanded block is flagged
+		// Check if there is a rectangle on the block
+		for (var i = 0; i < rectangles.length; i++) {
+			var position = positionOnRect(x, y, rectangles[i]);
+			if (position !== "") {
+				ctx.strokeStyle = rectangles[i].getColor();
+				ctx.beginPath();
+
+				if (rectangles[i].getHeight() === 1 && rectangles[i].getWidth() === 1) {
+					ctx.moveTo(xPixelPos + 1, yPixelPos + 1);
+					ctx.lineTo(xPixelPos + self.blockSize - 1, yPixelPos + 1);
+					ctx.lineTo(xPixelPos + self.blockSize - 1, yPixelPos + self.blockSize - 1);
+					ctx.lineTo(xPixelPos + 1, yPixelPos + self.blockSize - 1);
+					ctx.lineTo(xPixelPos + 1, yPixelPos + 1);
+				} else if (position === "TL") {
+					ctx.moveTo(xPixelPos + self.blockSize, yPixelPos + 1);
+					ctx.lineTo(xPixelPos + 1, yPixelPos + 1);
+					ctx.lineTo(xPixelPos + 1, yPixelPos + self.blockSize);
+				} else if (position === "TR") {
+					ctx.moveTo(xPixelPos, yPixelPos + 1);
+					ctx.lineTo(xPixelPos + self.blockSize - 1, yPixelPos + 1);
+					ctx.lineTo(xPixelPos + self.blockSize - 1, yPixelPos + self.blockSize);
+				} else if (position === "BL") {
+					ctx.moveTo(xPixelPos + 1, yPixelPos);
+					ctx.lineTo(xPixelPos + 1, yPixelPos + self.blockSize - 1);
+					ctx.lineTo(xPixelPos + self.blockSize, yPixelPos + self.blockSize - 1);
+				} else if (position === "BR") {
+					ctx.moveTo(xPixelPos + self.blockSize - 1, yPixelPos);
+					ctx.lineTo(xPixelPos + self.blockSize - 1, yPixelPos + self.blockSize - 1);
+					ctx.lineTo(xPixelPos, yPixelPos + self.blockSize - 1);
+				} else if (position === "T") {
+					ctx.moveTo(xPixelPos, yPixelPos + 1);
+					ctx.lineTo(xPixelPos + self.blockSize, yPixelPos + 1);
+				} else if (position === "R") {
+					ctx.moveTo(xPixelPos + self.blockSize - 1, yPixelPos);
+					ctx.lineTo(xPixelPos + self.blockSize - 1, yPixelPos + self.blockSize);
+				} else if (position === "B") {
+					ctx.moveTo(xPixelPos, yPixelPos + self.blockSize - 1);
+					ctx.lineTo(xPixelPos + self.blockSize, yPixelPos + self.blockSize - 1);
+				} else if (position === "L") {
+					ctx.moveTo(xPixelPos + 1, yPixelPos);
+					ctx.lineTo(xPixelPos + 1, yPixelPos + self.blockSize);
+				}
+				ctx.stroke();
+			}
+		}
 	}
 
 	function drawBoard() {
@@ -103,6 +153,7 @@ function Renderer(height, width, board) {
 		canvas.height = height;
 		canvas.width = width;
 		ctx = canvas.getContext("2d");
+		// ctx.translate(0.5, 0.5);
 		ctx = ctx;
 		document.getElementById("game").appendChild(canvas);
 		// drawBoard(false);
@@ -122,6 +173,70 @@ function Renderer(height, width, board) {
 		renderer.drawBoard();
 	}
 
+	function addRectangle(x, y, height, width, color) {
+		rectangles.push(new Rectangle(x, y, height, width, color, rectangleIdCounter++));
+		return rectangleIdCounter - 1;
+	}
+
+	function removeRectangle(id) {
+		for (var i = 0; i < rectangles.length; i++) {
+			if (rectangles[i].getId() == id) {
+				var rectangle = rectangles[i];
+				// var x1 = rectangle.getX();
+				// var y1 = rectangle.getY();
+				// var x2 = x1 + rectangle.getWidth() - 1;
+				// var y2 = y1 + rectangle.getHeight() - 1;
+				// var border = getBorderOfRange(x1, y1, x2, y2);
+				rectangles.splice(i, 1);
+				// for (var b = 0; b < border.length; b++) {
+				// 	drawBlock(border[b].x, border[b].y);
+				// }
+				return;
+			}
+		}
+	}
+
+	function getBorderOfRange(x1, y1, x2, y2) {
+		var border = [];
+		for (var i = x1; i <= x2; i++) {
+			for (var j = y1; j <= y2; j++) {
+				var t = "";
+				if (i === x1 && j === y1) t = "TL";
+				else if (i === x2 && j === y1) t = "TR";
+				else if (i === x1 && j === y2) t = "BL";
+				else if (i === x2 && j === y2) t = "BR";
+				else if (i === x1) t = "L";
+				else if (i === x2) t = "R";
+				else if (j === y1) t = "T";
+				else if (j === y2) t = "B";
+
+				if (t != "") border.push({x: i, y: j, t: t});
+			}
+		}
+		return border;
+	}
+
+	function positionOnRect(x, y, rectangle) {
+		var x1 = rectangle.getX();
+		var y1 = rectangle.getY();
+		var x2 = x1 + rectangle.getWidth() - 1;
+		var y2 = y1 + rectangle.getHeight() - 1;
+
+		var p = "";
+
+		if (x < x1 || x > x2 || y < y1 || y > y2) p = ""; // Out of range
+		else if (x === x1 && y === y1) p = "TL";
+		else if (x === x2 && y === y1) p = "TR";
+		else if (x === x1 && y === y2) p = "BL";
+		else if (x === x2 && y === y2) p = "BR";
+		else if (x === x1) p = "L";
+		else if (x === x2) p = "R";
+		else if (y === y1) p = "T";
+		else if (y === y2) p = "B";
+
+		return p;
+	}
+
 	this.getCanvas = function() {
 		return canvas;
 	}
@@ -136,6 +251,8 @@ function Renderer(height, width, board) {
 		return ctx;
 	}
 
+	this.addRectangle = addRectangle;
+	this.removeRectangle = removeRectangle;
 	this.resizeBoard = resizeBoard;
 	this.drawBlock = drawBlock;
 	this.drawBoard = drawBoard;

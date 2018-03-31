@@ -53,7 +53,7 @@ EventListeners.addEventListeners = function(board, renderer, socketHandler, play
 			if (key == key_a || key == key_left) renderer.offsetX += offsetBy;
 			if (key == key_d || key == key_right) renderer.offsetX -= offsetBy;
 
-			if (key == key_w || key == key_a || key == key_s || key == key_d || key == key_up || key == key_down || key == key_left || key_right) {
+			if (key == key_w || key == key_a || key == key_s || key == key_d || key == key_up || key == key_down || key == key_left || key == key_right) {
 				renderer.drawBoard();
 				renderer.getCanvas().dispatchEvent(new Event('mousemove'));
 			}
