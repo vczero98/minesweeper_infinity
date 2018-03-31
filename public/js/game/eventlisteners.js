@@ -1,14 +1,14 @@
 function EventListeners() { }
 
-EventListeners.addEventListeners = function(board, socketHandler, playersManager) {
+EventListeners.addEventListeners = function(board, renderer, socketHandler, playersManager) {
 	// board.drawBlock(1,1,false);
-	board.getCanvas().addEventListener("mouseup", function(evt){
+	renderer.getCanvas().addEventListener("mouseup", function(evt){
 		// Get the position of the click
 		var el = evt.target;
 		var xPos = evt.clientX - el.offsetLeft;
 		var yPos = evt.clientY - el.offsetTop;
-		var x = Math.floor(xPos / board.blockSize - board.offsetX);
-		var y = Math.floor(yPos / board.blockSize - board.offsetY);
+		var x = Math.floor(xPos / renderer.blockSize - renderer.offsetX);
+		var y = Math.floor(yPos / renderer.blockSize - renderer.offsetY);
 
 		if (evt.which == 1) {
 			// // If the click is a left click
@@ -48,14 +48,14 @@ EventListeners.addEventListeners = function(board, socketHandler, playersManager
 
 			var key = evt.keyCode ? evt.keyCode : evt.which;
 			var offsetBy = 4;
-			if (key == key_w || key == key_up) board.offsetY += offsetBy;
-			if (key == key_s || key == key_down) board.offsetY -= offsetBy;
-			if (key == key_a || key == key_left) board.offsetX += offsetBy;
-			if (key == key_d || key == key_right) board.offsetX -= offsetBy;
+			if (key == key_w || key == key_up) renderer.offsetY += offsetBy;
+			if (key == key_s || key == key_down) renderer.offsetY -= offsetBy;
+			if (key == key_a || key == key_left) renderer.offsetX += offsetBy;
+			if (key == key_d || key == key_right) renderer.offsetX -= offsetBy;
 
 			if (key == key_w || key == key_a || key == key_s || key == key_d || key == key_up || key == key_down || key == key_left || key_right) {
-				board.drawBoard();
-				board.getCanvas().dispatchEvent(new Event('mousemove'));
+				renderer.drawBoard();
+				renderer.getCanvas().dispatchEvent(new Event('mousemove'));
 			}
 		}
 		window.addEventListener('keyup', function() {
@@ -63,13 +63,13 @@ EventListeners.addEventListeners = function(board, socketHandler, playersManager
 		});
 	});
 
-	board.getCanvas().addEventListener("mousemove", function(evt) {
+	renderer.getCanvas().addEventListener("mousemove", function(evt) {
 		if (board.selectedItem) {
 			var el = evt.target;
 			var xPos = evt.clientX - el.offsetLeft;
 			var yPos = evt.clientY - el.offsetTop;
-			var x = Math.floor(xPos / board.blockSize - board.offsetX);
-			var y = Math.floor(yPos / board.blockSize - board.offsetY);
+			var x = Math.floor(xPos / renderer.blockSize - renderer.offsetX);
+			var y = Math.floor(yPos / renderer.blockSize - renderer.offsetY);
 
 			if (!board.newHoveringBlock) {
 				board.newHoveringBlock = {x: x, y: y};

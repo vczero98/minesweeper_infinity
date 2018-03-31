@@ -1,4 +1,4 @@
-function SocketHandler(chatHandler, socket, playersManager, board) {
+function SocketHandler(chatHandler, socket, playersManager, board, renderer) {
 	// this.socket = io();
 	// this.chatHandler = chatHandler;
 	var self = this;
@@ -37,7 +37,7 @@ function SocketHandler(chatHandler, socket, playersManager, board) {
 
 	socket.on('board-state', function(data) {
 		board.getBlocks().setState(data);
-		board.drawBoard();
+		renderer.drawBoard();
 	});
 
 	socket.on('color-change', function (data) {

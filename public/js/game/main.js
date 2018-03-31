@@ -4,13 +4,17 @@ window.onload = function() {
 	var cWidth = document.documentElement.clientWidth - 320;
 	var playersManager = new PlayersManager();
 
-	var board = new Board(cHeight, cWidth, playersManager, null);
+	var board = new Board(playersManager);
+	var renderer = new Renderer(cHeight, cWidth, board);
+	board.setRenderer(renderer);
 	// board.drawBoard(true);
 	var socket = io();
 	var chatHandler = new ChatHandler();
-	var socketHandler = new SocketHandler(chatHandler, socket, playersManager, board);
+	var socketHandler = new SocketHandler(chatHandler, socket, playersManager, board, renderer);
 
-	EventListeners.addEventListeners(board, socketHandler, playersManager);
+	renderer.init();
+
+	EventListeners.addEventListeners(board, renderer, socketHandler, playersManager);
 
 	var resizeTimer;
 	$(window).resize(function () {
