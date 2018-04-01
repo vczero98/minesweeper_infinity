@@ -22,7 +22,7 @@ window.onload = function() {
 	  resizeTimer = setTimeout(function() {
 			var cHeight = document.documentElement.clientHeight - 50;
 			var cWidth = document.documentElement.clientWidth - 320;
-			board.resizeBoard(cHeight, cWidth);
+			renderer.resizeBoard(cHeight, cWidth);
 			console.log("resized");
 		}, 100);
 	});
@@ -34,24 +34,3 @@ window.onload = function() {
 		return false;
 	}
 }
-
-//
-// window.onkeyup = function(e) {
-//   var key = e.keyCode ? e.keyCode : e.which;
-//
-// 	switch(key) {
-//     case key_w:
-//         board.moveUp = false;
-//         break;
-//     case key_a:
-//         board.moveLeft = false;
-//         break;
-// 		case key_s:
-//         board.moveDown = false;
-//         break;
-// 		case key_d:
-//         board.moveRight = false;
-//         break;
-// 	}
-// }
-//

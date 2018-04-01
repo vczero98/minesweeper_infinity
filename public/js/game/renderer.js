@@ -8,6 +8,7 @@ function Renderer(height, width, board) {
 
 	var images = new Images();
 
+	this.images = images;
 	this.blockSize = 24;
 	this.offsetX = 0;
 	this.offsetY = 0;
@@ -27,18 +28,6 @@ function Renderer(height, width, board) {
 		const xPixelPos = (x + self.offsetX) * self.blockSize;
 		const yPixelPos = (y + self.offsetY) * self.blockSize;
 
-		// if (block.expanded) {
-		// 	if (block.isMine) {
-		// 		img.src += "mine.png";
-		// 	} else {
-		// 		img.src += block.n + ".png";
-		// 	}
-		// } else {
-		// 	if (block.flagged) {
-		// 		img.src += "red_flag.png";
-		// 	} else {
-		// 		img.src += "unexpanded.png";
-		// 	}
 		if (block.isUndefinedBlock) {
 			img = images.unexpanded;
 		} else if (block.exploadedMine !== "") {
@@ -89,7 +78,6 @@ function Renderer(height, width, board) {
 		if (block.hovering && board.selectedItem) {
 			ctx.fillStyle = board.selectedItem.fillColor;
 			ctx.fillRect((x + self.offsetX) * self.blockSize, (y + self.offsetY) * self.blockSize, self.blockSize, self.blockSize);
-			// ctx.strokeRect((x + self.offsetX) * self.blockSize + 1, (y + self.offsetY) * self.blockSize + 1, self.blockSize - 2, self.blockSize - 2);
 		}
 
 		// TODO: Block redrawn when expanded block is flagged
@@ -98,44 +86,57 @@ function Renderer(height, width, board) {
 			var position = positionOnRect(x, y, rectangles[i]);
 			if (position !== "") {
 				ctx.strokeStyle = rectangles[i].getColor();
+				// ctx.translate(0.5, 0.5);
+				ctx.lineWidth = 3;
+				const t = 2 // Translate lines by
 				ctx.beginPath();
 
 				if (rectangles[i].getHeight() === 1 && rectangles[i].getWidth() === 1) {
-					ctx.moveTo(xPixelPos + 1, yPixelPos + 1);
-					ctx.lineTo(xPixelPos + self.blockSize - 1, yPixelPos + 1);
-					ctx.lineTo(xPixelPos + self.blockSize - 1, yPixelPos + self.blockSize - 1);
-					ctx.lineTo(xPixelPos + 1, yPixelPos + self.blockSize - 1);
-					ctx.lineTo(xPixelPos + 1, yPixelPos + 1);
+					ctx.moveTo(xPixelPos + t, yPixelPos + t);
+					ctx.lineTo(xPixelPos + self.blockSize - t, yPixelPos + t);
+					ctx.lineTo(xPixelPos + self.blockSize - t, yPixelPos + self.blockSize - t);
+					ctx.lineTo(xPixelPos + t, yPixelPos + self.blockSize - t);
+					ctx.lineTo(xPixelPos + t, yPixelPos + t);
 				} else if (position === "TL") {
-					ctx.moveTo(xPixelPos + self.blockSize, yPixelPos + 1);
-					ctx.lineTo(xPixelPos + 1, yPixelPos + 1);
-					ctx.lineTo(xPixelPos + 1, yPixelPos + self.blockSize);
+					ctx.moveTo(xPixelPos + self.blockSize, yPixelPos + t);
+					ctx.lineTo(xPixelPos + t, yPixelPos + t);
+					ctx.lineTo(xPixelPos + t, yPixelPos + self.blockSize);
 				} else if (position === "TR") {
-					ctx.moveTo(xPixelPos, yPixelPos + 1);
-					ctx.lineTo(xPixelPos + self.blockSize - 1, yPixelPos + 1);
-					ctx.lineTo(xPixelPos + self.blockSize - 1, yPixelPos + self.blockSize);
+					ctx.moveTo(xPixelPos, yPixelPos + t);
+					ctx.lineTo(xPixelPos + self.blockSize - t, yPixelPos + t);
+					ctx.lineTo(xPixelPos + self.blockSize - t, yPixelPos + self.blockSize);
 				} else if (position === "BL") {
-					ctx.moveTo(xPixelPos + 1, yPixelPos);
-					ctx.lineTo(xPixelPos + 1, yPixelPos + self.blockSize - 1);
-					ctx.lineTo(xPixelPos + self.blockSize, yPixelPos + self.blockSize - 1);
+					ctx.moveTo(xPixelPos + t, yPixelPos);
+					ctx.lineTo(xPixelPos + t, yPixelPos + self.blockSize - t);
+					ctx.lineTo(xPixelPos + self.blockSize, yPixelPos + self.blockSize - t);
 				} else if (position === "BR") {
-					ctx.moveTo(xPixelPos + self.blockSize - 1, yPixelPos);
-					ctx.lineTo(xPixelPos + self.blockSize - 1, yPixelPos + self.blockSize - 1);
-					ctx.lineTo(xPixelPos, yPixelPos + self.blockSize - 1);
+					ctx.moveTo(xPixelPos + self.blockSize - t, yPixelPos);
+					ctx.lineTo(xPixelPos + self.blockSize - t, yPixelPos + self.blockSize - t);
+					ctx.lineTo(xPixelPos, yPixelPos + self.blockSize - t);
+
+					// Draw icon
+					if (rectangles[i].getIcon() !== undefined) {
+						const iconX = (x + self.offsetX) * self.blockSize + (self.blockSize - 15) - 3;
+						const iconY = (y + self.offsetY) * self.blockSize + (self.blockSize - 15) - 3;
+						ctx.stroke();
+						ctx.beginPath();
+						ctx.drawImage(rectangles[i].getIcon(), iconX, iconY);
+					}
 				} else if (position === "T") {
-					ctx.moveTo(xPixelPos, yPixelPos + 1);
-					ctx.lineTo(xPixelPos + self.blockSize, yPixelPos + 1);
+					ctx.moveTo(xPixelPos, yPixelPos + t);
+					ctx.lineTo(xPixelPos + self.blockSize, yPixelPos + t);
 				} else if (position === "R") {
-					ctx.moveTo(xPixelPos + self.blockSize - 1, yPixelPos);
-					ctx.lineTo(xPixelPos + self.blockSize - 1, yPixelPos + self.blockSize);
+					ctx.moveTo(xPixelPos + self.blockSize - t, yPixelPos);
+					ctx.lineTo(xPixelPos + self.blockSize - t, yPixelPos + self.blockSize);
 				} else if (position === "B") {
-					ctx.moveTo(xPixelPos, yPixelPos + self.blockSize - 1);
-					ctx.lineTo(xPixelPos + self.blockSize, yPixelPos + self.blockSize - 1);
+					ctx.moveTo(xPixelPos, yPixelPos + self.blockSize - t);
+					ctx.lineTo(xPixelPos + self.blockSize, yPixelPos + self.blockSize - t);
 				} else if (position === "L") {
-					ctx.moveTo(xPixelPos + 1, yPixelPos);
-					ctx.lineTo(xPixelPos + 1, yPixelPos + self.blockSize);
+					ctx.moveTo(xPixelPos + t, yPixelPos + self.blockSize);
+					ctx.lineTo(xPixelPos + t, yPixelPos);
 				}
 				ctx.stroke();
+				// ctx.translate(-0.5, -0.5);
 			}
 		}
 	}
@@ -170,7 +171,7 @@ function Renderer(height, width, board) {
 		width = newWidth;
 		canvas.height = height;
 		canvas.width = width;
-		renderer.drawBoard();
+		drawBoard();
 	}
 
 	function addRectangle(x, y, height, width, color) {
@@ -192,6 +193,14 @@ function Renderer(height, width, board) {
 				// 	drawBlock(border[b].x, border[b].y);
 				// }
 				return;
+			}
+		}
+	}
+
+	function getRectangle(id) {
+		for (var i = 0; i < rectangles.length; i++) {
+			if (rectangles[i].getId() == id) {
+				return rectangles[i];
 			}
 		}
 	}
@@ -253,6 +262,7 @@ function Renderer(height, width, board) {
 
 	this.addRectangle = addRectangle;
 	this.removeRectangle = removeRectangle;
+	this.getRectangle = getRectangle;
 	this.resizeBoard = resizeBoard;
 	this.drawBlock = drawBlock;
 	this.drawBoard = drawBoard;

@@ -15,7 +15,7 @@ function Board(playersManager) {
 	function clickBlock(x, y) {
 		if (self.selectedItem !== undefined) {
 			socketHandler.useItem(self.selectedItem.id, x, y);
-			deselectItem();
+			itemActivated();
 			return [];
 		} else {
 			var block = blocks.getBlock(x, y);
@@ -135,7 +135,7 @@ function Board(playersManager) {
 		if (nBlock) {
 			const size = self.selectedItem.range;
 			const mid = Math.floor((size - 0.5) / 2);
-			hoveringRect = renderer.addRectangle(nBlock.x - mid, nBlock.y - mid, size, size, self.selectItem.borderColor);
+			hoveringRect = renderer.addRectangle(nBlock.x - mid, nBlock.y - mid, size, size, self.selectedItem.borderColor);
 			for (var i = 0; i < size; i++) {
 				for (var j = 0; j < size; j++) {
 					blocks.getBlock(nBlock.x + i - mid, nBlock.y + j - mid).hovering = true;
@@ -156,8 +156,24 @@ function Board(playersManager) {
 	}
 
 	function deselectItem() {
-		if (self.selectedItem.leavesRect)
+		self.selectedItem = undefined;
+		self.oldHoveringBlock = self.newHoveringBlock;
+		self.newHoveringBlock = undefined;
+		self.hoveringBlockUpdated();
+	}
+
+	function itemActivated() {
+		if (self.selectedItem.leavesRect) {
+			// Select the icon to use
+			var icon = undefined;
+			switch (self.selectedItem) {
+				case Items.FREEZE: icon = renderer.images.item_freeze; break;
+				case Items.BLURRED_VISION: icon = renderer.images.item_bvision; break;
+			}
+			console.log(Images.flag_green);
+			renderer.getRectangle(hoveringRect).setIcon(icon);
 			hoveringRect = undefined;
+		}
 		self.selectedItem = undefined;
 		self.oldHoveringBlock = self.newHoveringBlock;
 		self.newHoveringBlock = undefined;

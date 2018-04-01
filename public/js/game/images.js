@@ -36,6 +36,12 @@ function Images() {
 	this.blurred = new Image();
 	this.blurred.src = location + "blurred.png";
 
+	this.item_freeze = new Image();
+	this.item_freeze.src = location + "freeze_sm.png";
+
+	this.item_bvision = new Image();
+	this.item_bvision.src = location + "bvision_sm.png";
+
 	this.n = [];
 	for (var i = 0; i < 9; i++) {
 		this.n[i] = new Image();
