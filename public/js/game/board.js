@@ -19,10 +19,13 @@ function Board(playersManager) {
 			return [];
 		} else {
 			var block = blocks.getBlock(x, y);
+			console.log(block);
 			if (block.isUndefinedBlock) {
 				block = new Block();
 			}
-
+			if (block.frozen) {
+				return [];
+			}
 			if (!block.expanded) {
 				// Check that the block is not flagged
 				if (block.flagColor === "") {

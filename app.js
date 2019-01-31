@@ -1,24 +1,24 @@
 var express          = require("express"),
-    app              = express(),
-    bodyParser       = require("body-parser"),
-    mongoose         = require("mongoose"),
-		passport         = require("passport"),
-		LocalStrategy    = require("passport-local"),
-		// methodOverride = require("method-override"),
-		flash            = require("connect-flash"),
-		server           = require('http').createServer(app),
+	app              = express(),
+	bodyParser       = require("body-parser"),
+	mongoose         = require("mongoose"),
+	passport         = require("passport"),
+	LocalStrategy    = require("passport-local"),
+	// methodOverride = require("method-override"),
+	flash            = require("connect-flash"),
+	server           = require('http').createServer(app),
     io               = require('socket.io').listen(server),
-		expressSession   = require("express-session"),
-		sharedsession    = require("express-socket.io-session"),
-		MongoStore       = require('connect-mongo')(expressSession),
-		passportSocketIo = require("passport.socketio");
+	expressSession   = require("express-session"),
+	sharedsession    = require("express-socket.io-session"),
+	MongoStore       = require('connect-mongo')(expressSession),
+	passportSocketIo = require("passport.socketio");
 
 var User = require("./models/user");
 //     Comment    = require("./models/comment"),
 // 		seedDB     = require("./seeds"),
 
 var port          = 3000,
-    serverAddress = "0.0.0.0";
+	serverAddress = "0.0.0.0";
 
 var Room = require("./game/room");
 

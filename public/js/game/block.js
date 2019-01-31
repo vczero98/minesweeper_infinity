@@ -20,4 +20,5 @@ function Block() {
 	this.flagOwner = "";
 	this.n = 0;
 	this.exploadedMine = "";
+	this.frozen = false;
 }

@@ -127,13 +127,18 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 		}
 	}
 
-	function expandBlock(x, y, color) {
+	function expandBlock(x, y, color, username) {
 		var updates = [];
 		var block = self.blocks.getBlock(x, y);
+
 		if (block.isUndefinedBlock) {
 			block = new Block();
 		}
 		if (block.expanded) {
+			return [];
+		}
+		if (username != undefined && !block.isUndefinedBlock && block.isFrozenFor(username)) {
+			console.log("frozen for " + username);
 			return [];
 		}
 		if (block.isMine()) {
@@ -156,14 +161,29 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 		return updates;
 	}
 
+	// Used to convert the server's blocks to the user's format
 	function convertBlockToSendable(block, username) {
 		var sendableBlock = Object.assign({}, block); // Clone the block
-		if (sendableBlock.isBlurredFor(username) && sendableBlock.n > 0 && sendableBlock.n <= 8) {
+
+		// If object is empty
+		if (Object.entries(sendableBlock).length === 0 && sendableBlock.constructor === Object)
+			return {}
+
+		if (sendableBlock == undefined) {
 			sendableBlock.n = 9;
+			return sendableBlock;
 		}
+		if (sendableBlock.isUndefinedBlock)
+			return sendableBlock;
+
+		if (sendableBlock.isBlurredFor(username) && sendableBlock.n > 0 && sendableBlock.n <= 8)
+			sendableBlock.n = 9;
 
 		if (sendableBlock.hasUsedRadar(username))
 			sendableBlock.radar = sendableBlock.isMine();
+
+		if (sendableBlock.isFrozenFor(username))
+			sendableBlock.frozen = true;
 
 		delete sendableBlock.isUndefinedBlock;
 
@@ -175,9 +195,11 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 				}
 			}
 		}
+
 		return sendableBlock;
 	}
 
+	// Used when only a couple of blocks are updated for players
 	function convertBlocksToSendable(blocks, username) {
 		// Relies on x, y, block format
 		var sendableBlocks = [];
@@ -186,12 +208,26 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 		return sendableBlocks;
 	}
 
+	// Used at the start of the game when a player joins and the whole state is sent
+	function convertStateToSendable(state, username) {
+		var sendableState = [];
+		for (var i = 0; i < state.length; i++) {
+			sendableState.push([]);
+			for (var j = 0; j < state[i].length; j++) {
+				sendableState[i].push([]);
+				sendableState[i][j] = convertBlockToSendable(state[i][j], username);
+			}
+		}
+		return sendableState;
+	}
+
 	this.startGame = startGame;
 	this.getNumPlayers = getNumPlayers;
 	this.isFull = isFull;
 	this.expandBlock = expandBlock;
 	this.convertBlockToSendable = convertBlockToSendable;
 	this.convertBlocksToSendable = convertBlocksToSendable;
+	this.convertStateToSendable = convertStateToSendable;
 }
 
 module.exports = Room;

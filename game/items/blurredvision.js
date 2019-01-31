@@ -2,7 +2,7 @@ var Protocol = require('../protocol');
 var Block = require('../block');
 
 const range = 10;
-const probability = 2; // 1/n
+const probability = 1; // 1/n
 
 module.exports.getId = function() {
 	return Protocol.ITEM_BLURRED_VISION;

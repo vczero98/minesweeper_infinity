@@ -7,6 +7,7 @@ function Block() {
 	this.exploadedMine = "";
 	var isProtected = false;
 	var mine = false;
+	var frozenBy = [];
 	var radarBy = [];
 	var blurredBy = [];
 
@@ -37,9 +38,17 @@ function Block() {
 		return (blurredBy.length > 0) && !blurredBy.includes(username);
 	}
 
+	this.isFrozenFor = function(username) {
+		return (frozenBy.length > 0) && (frozenBy.length != 1 || !frozenBy.includes(username));
+	}
+
 	this.useRadar = function(username) {
 		if (!radarBy.includes(username))
 			radarBy.push(username);
+	}
+
+	this.useFreeze = function(username) {
+		frozenBy.push(username);
 	}
 
 	this.hasUsedRadar = function(username) {

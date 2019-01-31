@@ -28,7 +28,10 @@ module.exports = function(io, roomsHandler) {
 
 				player = {username: username,  color: room.availableColors.pop(), nFlags: 0, nExpanded: 0, id: socket.id};
 				socket.emit('all-players', {players: room.players, me: player, maxPlayers: room.maxPlayers});
-				socket.emit('board-state', room.blocks.getBlocksState())
+				// var sendableState = room.convertBlocksToSendable(room.blocks.getBlocksState());
+				var sendableState = room.convertStateToSendable(room.blocks.getBlocksState(), username);
+				// console.log(sendableState);
+				socket.emit('board-state', sendableState);
 				room.players.push(player);
 				socket.emit('server-message', username + " has joined the room.");
 				socket.broadcast.to(roomid).emit('new-player', player);
@@ -102,7 +105,7 @@ module.exports = function(io, roomsHandler) {
 
 		socket.on('expand-block', function(data) {
 			// TODO: do expansion checking
-			var updates = room.expandBlock(data.x, data.y, player.color);
+			var updates = room.expandBlock(data.x, data.y, player.color, player.username);
 			if (updates.length === 1 && updates[0].block.exploadedMine !== "") {
 				// User clicked on a mine
 

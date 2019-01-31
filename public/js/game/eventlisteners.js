@@ -11,7 +11,7 @@ EventListeners.addEventListeners = function(board, renderer, socketHandler, play
 		var y = Math.floor(yPos / renderer.blockSize - renderer.offsetY);
 
 		if (evt.which == 1) {
-			// // If the click is a left click
+			// If the click is a left click
 			console.log(x,y);
 			var blocksToExpand = board.clickBlock(x, y);
 			console.log("clicked on ", x, y);
