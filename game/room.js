@@ -214,7 +214,6 @@ function Room(id, name, maxPlayers, time, isPrivate) {
 		for (var i = 0; i < state.length; i++) {
 			sendableState.push([]);
 			for (var j = 0; j < state[i].length; j++) {
-				sendableState[i].push([]);
 				sendableState[i][j] = convertBlockToSendable(state[i][j], username);
 			}
 		}

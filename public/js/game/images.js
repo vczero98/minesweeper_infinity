@@ -27,6 +27,9 @@ function Images() {
 	this.mine_yellow = new Image();
 	this.mine_yellow.src = location + "mine_yellow.png";
 
+	this.frozen = new Image();
+	this.frozen.src = location + "frozen.png";
+
 	this.radar0 = new Image();
 	this.radar0.src = location + "radar0.png";
 

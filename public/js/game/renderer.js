@@ -74,6 +74,10 @@ function Renderer(height, width, board) {
 
 		if (img) {
 			ctx.drawImage(img, (x + self.offsetX) * self.blockSize, (y + self.offsetY) * self.blockSize);
+			if (block.frozen) {
+				console.log("frozen block");
+				ctx.drawImage(images.frozen, (x + self.offsetX) * self.blockSize, (y + self.offsetY) * self.blockSize);
+			}
 		}
 		if (block.hovering && board.selectedItem) {
 			ctx.fillStyle = board.selectedItem.fillColor;
